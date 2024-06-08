@@ -7,13 +7,9 @@ import halatsiankova.javafromscratch.lesson2.repository.TicketRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static halatsiankova.javafromscratch.lesson2.model.Ticket.StadiumSector.A;
 
@@ -22,7 +18,7 @@ public class TicketService {
 
     private final Validator validator;
 
-    private final Repository repository;
+    private final Repository<Ticket, String> repository;
 
     public TicketService() {
         validator = new Validator();
@@ -121,6 +117,12 @@ public class TicketService {
 
     public void saveAll(List<Ticket> ticketsForSave) {
         repository.saveAll(ticketsForSave);
+    }
+
+    public Ticket getById(String ticketId) {
+        return repository.findById(ticketId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(String.format("Cannot find ticket by ID = %s", ticketId)));
     }
 
     private String generateTicketId(int order) {

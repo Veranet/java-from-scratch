@@ -3,6 +3,7 @@ package halatsiankova.javafromscratch.lesson2.repository;
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,5 +25,10 @@ public class TicketRepository implements Repository<Ticket, String> {
         this.tickets.putAll(
                 tickets.stream()
                         .collect(Collectors.toMap(Ticket::getTicketId, Function.identity())));
+    }
+
+    @Override
+    public Optional<Ticket> findById(String id) {
+        return Optional.ofNullable(tickets.get(id));
     }
 }
