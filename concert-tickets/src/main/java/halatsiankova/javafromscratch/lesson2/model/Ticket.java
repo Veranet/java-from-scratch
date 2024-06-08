@@ -72,6 +72,42 @@ public class Ticket {
         this.createdDateTime = createdDateTime;
     }
 
+    public String getTicketId() {
+        return ticketId;
+    }
+
+    public String getConcertHall() {
+        return concertHall;
+    }
+
+    public int getEventCode() {
+        return eventCode;
+    }
+
+    public long getEventTime() {
+        return eventTime;
+    }
+
+    public boolean isPromo() {
+        return isPromo;
+    }
+
+    public StadiumSector getStadiumSector() {
+        return stadiumSector;
+    }
+
+    public double getAllowedBackpackWeight() {
+        return allowedBackpackWeight;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public OffsetDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
+
     public enum StadiumSector {
         A, B, C
     }
