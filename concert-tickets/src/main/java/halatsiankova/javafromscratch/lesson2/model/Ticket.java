@@ -16,8 +16,7 @@ public class Ticket {
     private BigDecimal price;
     private OffsetDateTime createdDateTime;
 
-    public Ticket() {
-    }
+
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
                   StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price, OffsetDateTime date) {
@@ -32,44 +31,14 @@ public class Ticket {
         this.createdDateTime = date;
     }
 
-    public Ticket(String concertHall, int eventCode, long time) {
-        this(null, concertHall, eventCode, time, false, null, 0.0, null, null);
+
+
+    public String getTicketId() {
+        return ticketId;
     }
 
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public void setConcertHall(String concertHall) {
-        this.concertHall = concertHall;
-    }
-
-    public void setEventCode(int eventCode) {
-        this.eventCode = eventCode;
-    }
-
-    public void setEventTime(long eventTime) {
-        this.eventTime = eventTime;
-    }
-
-    public void setPromo(boolean promo) {
-        isPromo = promo;
-    }
-
-    public void setStadiumSector(StadiumSector stadiumSector) {
-       this.stadiumSector = stadiumSector;
-    }
-
-    public void setAllowedBackpackWeight(double allowedBackpackWeight) {
-        this.allowedBackpackWeight = allowedBackpackWeight;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setCreatedDateTime(OffsetDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
+    public StadiumSector getStadiumSector() {
+        return stadiumSector;
     }
 
     public enum StadiumSector {
