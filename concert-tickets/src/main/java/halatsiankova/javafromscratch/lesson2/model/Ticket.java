@@ -93,10 +93,10 @@ public class Ticket {
                 stadiumSector, allowedBackpackWeight, price, createdDateTime);
     }
 
-    @Override
+   @Override
     public String toString() {
         return "Ticket{" +
-                "ticketId='" + ticketNumber + '\'' +
+                "ticketId='" + ticketN + '\'' +
                 ", concertHall='" + concertHall + '\'' +
                 ", eventCode=" + eventCode +
                 ", eventTime=" + eventTime +
