@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Ticket {
 
-    private String ticketId;
+    private String ticketNumber;
     private String concertHall;
     private int eventCode;
     private long eventTime;
@@ -21,7 +21,7 @@ public class Ticket {
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
                   StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price, OffsetDateTime date) {
-        this.ticketId = ticketId;
+        this.ticketNumber = ticketId;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
         this.eventTime = eventTime;
@@ -36,8 +36,8 @@ public class Ticket {
         this(null, concertHall, eventCode, time, false, null, 0.0, null, null);
     }
 
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
+    public void setTicketNumber(String ticketNumber) {
+        this.ticketNumber = ticketNumber;
     }
 
     public void setConcertHall(String concertHall) {
@@ -83,20 +83,20 @@ public class Ticket {
         return eventCode == ticket.eventCode && eventTime == ticket.eventTime && isPromo == ticket.isPromo
                 && stadiumSector == ticket.stadiumSector
                 && Double.compare(allowedBackpackWeight, ticket.allowedBackpackWeight) == 0
-                && Objects.equals(ticketId, ticket.ticketId) && Objects.equals(concertHall, ticket.concertHall)
+                && Objects.equals(ticketNumber, ticket.ticketNumber) && Objects.equals(concertHall, ticket.concertHall)
                 && Objects.equals(price, ticket.price) && Objects.equals(createdDateTime, ticket.createdDateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticketId, concertHall, eventCode, eventTime, isPromo,
+        return Objects.hash(ticketNumber, concertHall, eventCode, eventTime, isPromo,
                 stadiumSector, allowedBackpackWeight, price, createdDateTime);
     }
 
     @Override
     public String toString() {
         return "Ticket{" +
-                "ticketId='" + ticketId + '\'' +
+                "ticketId='" + ticketNumber + '\'' +
                 ", concertHall='" + concertHall + '\'' +
                 ", eventCode=" + eventCode +
                 ", eventTime=" + eventTime +
