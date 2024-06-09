@@ -3,17 +3,15 @@ package halatsiankova.javafromscratch.lesson2;
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 import halatsiankova.javafromscratch.lesson2.repository.Repository;
 import halatsiankova.javafromscratch.lesson2.repository.TicketRepository;
+import halatsiankova.javafromscratch.lesson2.repository.TicketRepositoryImpl;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static halatsiankova.javafromscratch.lesson2.model.Ticket.StadiumSector.A;
 
@@ -22,23 +20,30 @@ public class TicketService {
 
     private final Validator validator;
 
-    private final Repository repository;
+    private final TicketRepository repository;
 
     public TicketService() {
         validator = new Validator();
-        repository = new TicketRepository();
+        repository = new TicketRepositoryImpl();
     }
 
     public static void main(String[] args) {
 
+        // Lesson 2
         TicketService ticketService = new TicketService();
         ticketService.create();
         ticketService.create("12ae", "MAIN", 222, 1717499006,
                 true, A, 15.86, BigDecimal.valueOf(100.58));
         ticketService.create("SMALL", 135, 1717499006);
 
+        // Lesson 3
         List<Ticket> ticketsToLecture3 = ticketService.createTenTickets();
         ticketService.saveAll(ticketsToLecture3);
+
+        Arrays.stream(Ticket.StadiumSector.values())
+                .map(ticketService::getTicketsByStadiumSector)
+                .flatMap(List::stream )
+                .forEach(System.out::println);
     }
 
     public Ticket create() {
@@ -121,6 +126,10 @@ public class TicketService {
 
     public void saveAll(List<Ticket> ticketsForSave) {
         repository.saveAll(ticketsForSave);
+    }
+
+    public List<Ticket> getTicketsByStadiumSector(Ticket.StadiumSector stadiumSector) {
+        return repository.findTicketByStadiumSector(stadiumSector);
     }
 
     private String generateTicketId(int order) {
