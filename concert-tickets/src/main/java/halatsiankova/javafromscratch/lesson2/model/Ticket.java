@@ -1,10 +1,12 @@
 package halatsiankova.javafromscratch.lesson2.model;
 
+import halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class Ticket {
+public class Ticket implements Entity<Integer>{
 
     private String ticketId;
     private String concertHall;
@@ -108,8 +110,14 @@ public class Ticket {
         return createdDateTime;
     }
 
-    public enum StadiumSector {
-        A, B, C
+    @Override
+    public Integer getId() {
+        return Integer.parseInt(ticketId);
+    }
+
+    @Override
+    public void setId(Integer integer) {
+        this.ticketId = String.valueOf(integer);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.lesson2;
 
+import halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 import halatsiankova.javafromscratch.lesson2.service.TicketService;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static halatsiankova.javafromscratch.lesson2.model.Ticket.StadiumSector.A;
+import static halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector.A;
 import static halatsiankova.javafromscratch.lesson2.util.TicketsGeneratorUtil.generateTicketId;
 
 public class App {
@@ -27,7 +28,7 @@ public class App {
         service.saveAll(ticketsToLecture3);
 
         // Lesson - 3
-        Arrays.stream(Ticket.StadiumSector.values())
+        Arrays.stream(StadiumSector.values())
                 .map(service::getTicketsByStadiumSector)
                 .flatMap(List::stream)
                 .forEach (System.out::println);
@@ -43,7 +44,7 @@ public class App {
         return IntStream.range(0, 10)
                 .mapToObj(i ->
                          service.create(generateTicketId(i),concertHall, eventCode, eventTime, false,
-                                Ticket.StadiumSector.values()[i % 3], allowedBackpackWeight, price))
+                                StadiumSector.values()[i % 3], allowedBackpackWeight, price))
                 .toList();
     }
 }

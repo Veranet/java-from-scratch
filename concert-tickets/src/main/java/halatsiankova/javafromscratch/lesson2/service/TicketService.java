@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.lesson2.service;
 
+import halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 import halatsiankova.javafromscratch.lesson2.provider.DateTimeProvider;
 import halatsiankova.javafromscratch.lesson2.repository.TicketRepository;
@@ -30,7 +31,7 @@ public class TicketService {
     }
 
     public Ticket create(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
-                         Ticket.StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price) {
+                         StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price) {
         validator.validateTicketId(ticketId);
         validator.validateConcertHall(concertHall);
         validator.validateEventCode(eventCode);
@@ -63,7 +64,7 @@ public class TicketService {
                         new IllegalArgumentException(String.format("Cannot find ticket by ID = %s", ticketId)));
     }
 
-    public List<Ticket> getTicketsByStadiumSector(Ticket.StadiumSector stadiumSector) {
+    public List<Ticket> getTicketsByStadiumSector(StadiumSector stadiumSector) {
         return repository.findTicketByStadiumSector(stadiumSector);
     }
 }

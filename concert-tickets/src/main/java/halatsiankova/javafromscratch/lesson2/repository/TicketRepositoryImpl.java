@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.lesson2.repository;
 
+import halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class TicketRepositoryImpl implements TicketRepository {
     }
 
     @Override
-    public List<Ticket> findTicketByStadiumSector(Ticket.StadiumSector stadiumSector) {
+    public List<Ticket> findTicketByStadiumSector(StadiumSector stadiumSector) {
         return this.tickets.values().stream()
                 .filter(ticket -> ticket.getStadiumSector() == stadiumSector)
                 .toList();
