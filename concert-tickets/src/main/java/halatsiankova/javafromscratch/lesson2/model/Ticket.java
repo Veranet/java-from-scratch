@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class Ticket implements Entity<Integer>{
+public class Ticket implements Entity<Integer>, Printable{
 
     private String ticketId;
     private String concertHall;

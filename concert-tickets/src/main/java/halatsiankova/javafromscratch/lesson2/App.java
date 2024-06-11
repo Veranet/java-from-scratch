@@ -32,6 +32,9 @@ public class App {
                 .map(service::getTicketsByStadiumSector)
                 .flatMap(List::stream)
                 .forEach (System.out::println);
+
+        // Lesson - 4
+        ticketsToLecture3.get(1).print();
     }
 
     private static List<Ticket> createTenTickets(TicketService service) {
