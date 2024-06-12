@@ -14,9 +14,7 @@ public class TicketService {
     private static final System.Logger LOGGER = System.getLogger(TicketService.class.getSimpleName());
 
     private final TicketValidator validator;
-
     private final TicketRepository repository;
-
     private final DateTimeProvider timeProvider;
 
     public TicketService() {
@@ -24,6 +22,14 @@ public class TicketService {
         repository = new TicketRepositoryImpl();
         timeProvider = new DateTimeProvider();
     }
+
+    public TicketService(TicketRepository repository) {
+        this.validator = new TicketValidator();
+        this.repository = repository;
+        this.timeProvider = new DateTimeProvider();
+    }
+
+
     public Ticket create() {
         Ticket emptyTicket = new Ticket();
         LOGGER.log(System.Logger.Level.INFO, emptyTicket);

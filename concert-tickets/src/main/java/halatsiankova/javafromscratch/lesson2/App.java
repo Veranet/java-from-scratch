@@ -15,6 +15,8 @@ import static halatsiankova.javafromscratch.lesson2.util.TicketsGeneratorUtil.ge
 
 public class App {
 
+    private static final System.Logger LOGGER = System.getLogger(App.class.getSimpleName());
+
     public static void main(String[] args) {
         // Lesson - 1
         TicketService service = new TicketService();
@@ -34,7 +36,12 @@ public class App {
                 .forEach (System.out::println);
 
         // Lesson - 4
-        ticketsToLecture3.get(1).print();
+        // task 4.1
+        Ticket ticket = ticketsToLecture3.get(1);
+        ticket.setId(15);
+        LOGGER.log(System.Logger.Level.INFO, ticket.getId());
+        // task 4.2
+        ticket.print();
     }
 
     private static List<Ticket> createTenTickets(TicketService service) {

@@ -5,13 +5,14 @@ import halatsiankova.javafromscratch.lesson2.model.Ticket;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TicketRepositoryImpl implements TicketRepository {
-    private final ConcurrentHashMap<String, Ticket> tickets;
+    private final Map<String, Ticket> tickets;
 
     public TicketRepositoryImpl() {
         this.tickets = new ConcurrentHashMap<>();
