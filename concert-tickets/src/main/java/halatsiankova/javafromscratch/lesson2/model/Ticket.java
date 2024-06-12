@@ -6,10 +6,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class Ticket implements Entity<Integer>, Printable {
+public class Ticket implements Entity<Integer>, Printable, Sharable {
     private Integer id;
-    private
-    String ticketId;
+    private String ticketId;
     private String concertHall;
     private int eventCode;
     private long eventTime;
@@ -91,6 +90,17 @@ public class Ticket implements Entity<Integer>, Printable {
     @Override
     public void setId(Integer integer) {
         this.id = integer;
+    }
+
+    @Override
+    public String share(String phone) {
+        return String.format("Ticket with ticketId = %s share by phone %s .%n", ticketId, phone);
+    }
+
+    @Override
+    public String share(String phone, String email) {
+        return String
+                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n", ticketId, phone, email);
     }
 
     @Override

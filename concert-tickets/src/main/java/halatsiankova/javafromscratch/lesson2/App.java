@@ -33,7 +33,7 @@ public class App {
         Arrays.stream(StadiumSector.values())
                 .map(service::getTicketsByStadiumSector)
                 .flatMap(List::stream)
-                .forEach (System.out::println);
+                .forEach(System.out::println);
 
         // Lesson - 4
         // task 4.1
@@ -42,6 +42,9 @@ public class App {
         LOGGER.log(System.Logger.Level.INFO, ticket.getId());
         // task 4.2
         ticket.print();
+        // task 4.4
+        service.shareByPhone("+12 123-456-7890", ticket);
+        service.shareByPhoneAndEmail("+12 123-456-7890", "email@dom.com", ticket);
     }
 
     private static List<Ticket> createTenTickets(TicketService service) {
@@ -53,7 +56,7 @@ public class App {
         var price = BigDecimal.valueOf(159.45);
         return IntStream.range(0, 10)
                 .mapToObj(i ->
-                         service.create(generateTicketId(i),concertHall, eventCode, eventTime, false,
+                        service.create(generateTicketId(i), concertHall, eventCode, eventTime, false,
                                 StadiumSector.values()[i % 3], allowedBackpackWeight, price))
                 .toList();
     }

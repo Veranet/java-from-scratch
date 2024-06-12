@@ -5,6 +5,7 @@ import halatsiankova.javafromscratch.lesson2.model.Ticket;
 import halatsiankova.javafromscratch.lesson2.provider.DateTimeProvider;
 import halatsiankova.javafromscratch.lesson2.repository.TicketRepository;
 import halatsiankova.javafromscratch.lesson2.repository.TicketRepositoryImpl;
+import halatsiankova.javafromscratch.lesson2.validator.CommunicationValidator;
 import halatsiankova.javafromscratch.lesson2.validator.TicketValidator;
 
 import java.math.BigDecimal;
@@ -14,21 +15,16 @@ public class TicketService {
     private static final System.Logger LOGGER = System.getLogger(TicketService.class.getSimpleName());
 
     private final TicketValidator validator;
+    private final CommunicationValidator communicationValidator;
     private final TicketRepository repository;
     private final DateTimeProvider timeProvider;
 
     public TicketService() {
+        communicationValidator = new CommunicationValidator();
         validator = new TicketValidator();
         repository = new TicketRepositoryImpl();
         timeProvider = new DateTimeProvider();
     }
-
-    public TicketService(TicketRepository repository) {
-        this.validator = new TicketValidator();
-        this.repository = repository;
-        this.timeProvider = new DateTimeProvider();
-    }
-
 
     public Ticket create() {
         Ticket emptyTicket = new Ticket();
@@ -72,5 +68,16 @@ public class TicketService {
 
     public List<Ticket> getTicketsByStadiumSector(StadiumSector stadiumSector) {
         return repository.findTicketByStadiumSector(stadiumSector);
+    }
+
+    public void shareByPhone(String phone, Ticket ticket) {
+        communicationValidator.validatePhoneNumber(phone);
+        LOGGER.log(System.Logger.Level.INFO, ticket.share(phone));
+    }
+
+    public void shareByPhoneAndEmail(String phone, String email, Ticket ticket) {
+        communicationValidator.validatePhoneNumber(phone);
+        communicationValidator.validateEmail(email);
+        LOGGER.log(System.Logger.Level.INFO, ticket.share(phone, email));
     }
 }
