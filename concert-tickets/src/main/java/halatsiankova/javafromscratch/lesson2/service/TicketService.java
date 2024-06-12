@@ -26,6 +26,13 @@ public class TicketService {
         timeProvider = new DateTimeProvider();
     }
 
+    public TicketService(TicketRepository repository) {
+        this.validator = new TicketValidator();
+        communicationValidator = new CommunicationValidator();
+        this.repository = repository;
+        this.timeProvider = new DateTimeProvider();
+    }
+
     public Ticket create() {
         Ticket emptyTicket = new Ticket();
         LOGGER.log(System.Logger.Level.INFO, emptyTicket);
