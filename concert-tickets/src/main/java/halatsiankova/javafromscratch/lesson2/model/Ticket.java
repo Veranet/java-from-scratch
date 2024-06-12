@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.lesson2.model;
 
+import halatsiankova.javafromscratch.lesson2.annotation.NullableWarning;
 import halatsiankova.javafromscratch.lesson2.enumerated.StadiumSector;
 
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 public class Ticket implements Entity<Integer>, Printable, Sharable {
     private Integer id;
+    @NullableWarning
     private String ticketId;
     private String concertHall;
     private int eventCode;

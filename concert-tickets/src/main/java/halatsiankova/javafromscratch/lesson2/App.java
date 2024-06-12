@@ -10,6 +10,7 @@ import halatsiankova.javafromscratch.lesson2.repository.UserRepository;
 import halatsiankova.javafromscratch.lesson2.service.AdministrationService;
 import halatsiankova.javafromscratch.lesson2.service.TicketService;
 import halatsiankova.javafromscratch.lesson2.service.UserService;
+import halatsiankova.javafromscratch.lesson2.validator.NullValidator;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -63,12 +64,17 @@ public class App {
         user.setId(1);
         Admin admin = new Admin();
         admin.setId(2);
+        user.printRole();
+        admin.printRole();
         ticketService.saveAll(ticketsToLecture3);
         userRepository.save(user);
         userService.buyTicket(user, ticketsToLecture3.getFirst());
         Ticket usersTicket = userService.getAllTickets(user).getFirst();
         LOGGER.log(System.Logger.Level.INFO, usersTicket);
         administrationService.checkTicket(usersTicket, admin);
+
+        Ticket checkField = new Ticket();
+        NullValidator.checkNullFields(checkField);
     }
 
     private static List<Ticket> createTenTickets(TicketService service) {
