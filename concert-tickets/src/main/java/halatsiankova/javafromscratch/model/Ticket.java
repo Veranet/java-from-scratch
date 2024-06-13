@@ -90,8 +90,8 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
     }
 
     @Override
-    public void setId(Integer integer) {
-        this.id = integer;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
