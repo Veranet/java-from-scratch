@@ -5,7 +5,7 @@ import halatsiankova.javafromscratch.annotation.NullableWarning;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-public class NullValidator {
+public class NullValidatorProcessor {
     public static void checkNullFields(Object obj) {
         System.Logger logger = System.getLogger(obj.getClass().getSimpleName());
         Class<?> checkClass = obj.getClass();
