@@ -20,13 +20,16 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import static halatsiankova.javafromscratch.enumerated.StadiumSector.A;
+import static java.util.logging.Logger.getLogger;
 
 public class App {
 
-    private static final System.Logger LOGGER = System.getLogger(App.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(App.class.getSimpleName());
 
     public static void main(String[] args) {
         // Lesson - 1
@@ -50,7 +53,7 @@ public class App {
         // task 4.1
         Ticket ticket = ticketsToLecture3.get(1);
         ticket.setId(15);
-        LOGGER.log(System.Logger.Level.INFO, ticket.getId());
+        LOGGER.log(Level.INFO, ticket.getId().toString());
         // task 4.2
         ticket.print();
         // task 4.4
@@ -73,7 +76,7 @@ public class App {
         userRepository.save(user);
         userService.buyTicket(user, ticketsToLecture3.getFirst());
         Ticket usersTicket = userService.getAllTickets(user).getFirst();
-        LOGGER.log(System.Logger.Level.INFO, usersTicket);
+        LOGGER.log(Level.INFO, usersTicket.toString());
         administrationService.checkTicket(usersTicket, admin);
 
         Ticket checkField = new Ticket();

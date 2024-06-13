@@ -10,9 +10,13 @@ import halatsiankova.javafromscratch.validator.TicketValidator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
 
 public class TicketService {
-    private static final System.Logger LOGGER = System.getLogger(TicketService.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(TicketService.class.getSimpleName());
 
     private final TicketValidator validator;
     private final CommunicationValidator communicationValidator;
@@ -35,7 +39,7 @@ public class TicketService {
 
     public Ticket create() {
         Ticket emptyTicket = new Ticket();
-        LOGGER.log(System.Logger.Level.INFO, emptyTicket);
+        LOGGER.log(Level.INFO, emptyTicket.toString());
         return emptyTicket;
     }
 
@@ -50,7 +54,7 @@ public class TicketService {
         var createdDateTime = timeProvider.provideDateTime();
         Ticket fullTicket = new Ticket(ticketId, concertHall, eventCode, eventTime, isPromo,
                 stadiumSector, allowedBackpackWeight, price, createdDateTime);
-        LOGGER.log(System.Logger.Level.INFO, fullTicket);
+        LOGGER.log(Level.INFO, fullTicket.toString());
         return fullTicket;
     }
 
@@ -59,7 +63,7 @@ public class TicketService {
         validator.validateEventCode(eventCode);
         validator.validateEventTime(time);
         Ticket limitedTicket = new Ticket(concertHall, eventCode, time);
-        LOGGER.log(System.Logger.Level.INFO, limitedTicket);
+        LOGGER.log(Level.INFO, limitedTicket.toString());
         return limitedTicket;
     }
 
@@ -79,12 +83,12 @@ public class TicketService {
 
     public void shareByPhone(String phone, Ticket ticket) {
         communicationValidator.validatePhoneNumber(phone);
-        LOGGER.log(System.Logger.Level.INFO, ticket.share(phone));
+        LOGGER.log(Level.INFO, ticket.share(phone));
     }
 
     public void shareByPhoneAndEmail(String phone, String email, Ticket ticket) {
         communicationValidator.validatePhoneNumber(phone);
         communicationValidator.validateEmail(email);
-        LOGGER.log(System.Logger.Level.INFO, ticket.share(phone, email));
+        LOGGER.log(Level.INFO, ticket.share(phone, email));
     }
 }

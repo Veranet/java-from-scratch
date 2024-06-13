@@ -5,8 +5,13 @@ import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.provider.DateTimeProvider;
 import halatsiankova.javafromscratch.repository.TicketRepository;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
+
 public class AdministrationService {
-    private static final System.Logger LOGGER = System.getLogger(AdministrationService.class.getSimpleName());
+    private static final Logger LOGGER = getLogger(AdministrationService.class.getSimpleName());
     private final TicketRepository ticketRepository;
 
     private final DateTimeProvider dateTimeProvider;
@@ -27,6 +32,6 @@ public class AdministrationService {
         }
         var infoLog =
                 String.format("checked by admin : ticketId=%s, admin Id=%d", ticket.getTicketId(), admin.getId());
-        LOGGER.log(System.Logger.Level.INFO, infoLog);
+        LOGGER.log(Level.INFO, infoLog);
     }
 }
