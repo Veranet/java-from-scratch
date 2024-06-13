@@ -113,7 +113,7 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
                 && eventTime == ticket.eventTime
                 && isPromo == ticket.isPromo
                 && stadiumSector == ticket.stadiumSector
-                && (int) id == ticket.id
+                && Objects.equals(id, ticket.id)
                 && Double.compare(allowedBackpackWeight, ticket.allowedBackpackWeight) == 0
                 && Objects.equals(ticketId, ticket.ticketId)
                 && Objects.equals(concertHall, ticket.concertHall)
