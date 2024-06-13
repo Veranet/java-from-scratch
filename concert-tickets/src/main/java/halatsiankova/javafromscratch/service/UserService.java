@@ -13,8 +13,7 @@ public class UserService {
 
     private final AdministrationRepository administrationRepository;
 
-    public UserService(TicketRepository ticketRepository, AdministrationRepository administrationRepository,
-                       TicketService ticketService) {
+    public UserService(TicketRepository ticketRepository, AdministrationRepository administrationRepository) {
         this.ticketRepository = ticketRepository;
         this.administrationRepository = administrationRepository;
     }

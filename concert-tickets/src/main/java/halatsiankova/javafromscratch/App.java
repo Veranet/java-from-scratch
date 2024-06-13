@@ -14,7 +14,7 @@ import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.model.User;
-import halatsiankova.javafromscratch.util.TicketsGeneratorUtil;
+import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -61,7 +61,7 @@ public class App {
         UserRepository userRepository = new UserRepository();
         TicketRepository ticketRepository = new TicketRepositoryImpl();
         TicketService ticketService = new TicketService(ticketRepository);
-        UserService userService = new UserService(ticketRepository, administrationRepository, ticketService);
+        UserService userService = new UserService(ticketRepository, administrationRepository);
         AdministrationService administrationService = new AdministrationService(ticketRepository, new DateTimeProvider());
         User user = new Client();
         user.setId(1);
@@ -89,7 +89,7 @@ public class App {
         var price = BigDecimal.valueOf(159.45);
         return IntStream.range(0, 10)
                 .mapToObj(i ->
-                        service.create(TicketsGeneratorUtil.generateTicketId(i), concertHall, eventCode, eventTime, false,
+                        service.create(HexIdGeneratorUtil.generateTicketId(i), concertHall, eventCode, eventTime, false,
                                 StadiumSector.values()[i % 3], allowedBackpackWeight, price))
                 .toList();
     }

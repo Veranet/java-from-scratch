@@ -27,21 +27,5 @@ public class NullValidator {
                         }
                     }
                 });
-//        for (Field field : fields) {
-//            if (field.isAnnotationPresent(NullableWarning.class)) {
-//                field.setAccessible(true);
-//                try {
-//                    if (field.get(obj) == null) {
-//                        var warningMessage =
-//                                String.format("Variable [%s] is null in [%s]!",
-//                                        field.getName(), checkClass.getSimpleName());
-//                        logger.log(System.Logger.Level.WARNING, warningMessage);
-//                    }
-//                } catch (IllegalAccessException e) {
-//                    var errorMessage = String.format("cannot get access to object %s", obj);
-//                    throw new IllegalStateException(errorMessage);
-//                }
-//            }
-//        }
     }
 }
