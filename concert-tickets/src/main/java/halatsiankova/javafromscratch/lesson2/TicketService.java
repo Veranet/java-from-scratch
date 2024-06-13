@@ -25,7 +25,6 @@ public class TicketService {
     public TicketService() {
         validator = new Validator();
         repository = new TicketRepositoryImpl();
-    }
 
     public static void main(String[] args) {
 
@@ -44,6 +43,9 @@ public class TicketService {
                 .map(ticketService::getTicketsByStadiumSector)
                 .flatMap(List::stream )
                 .forEach(System.out::println);
+      
+        ticketService.saveAll(ticketsToLecture3);
+
     }
 
     public Ticket create() {
@@ -130,6 +132,12 @@ public class TicketService {
 
     public List<Ticket> getTicketsByStadiumSector(Ticket.StadiumSector stadiumSector) {
         return repository.findTicketByStadiumSector(stadiumSector);
+    }
+      
+    public Ticket getById(String ticketId) {
+        return repository.findById(ticketId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(String.format("Cannot find ticket by ID = %s", ticketId)));
     }
 
     private String generateTicketId(int order) {
