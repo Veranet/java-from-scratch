@@ -2,13 +2,16 @@ package halatsiankova.javafromscratch.lesson2.repository;
 
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public interface TicketRepository extends Repository<Ticket, String> {
-  
-    List<Ticket> findTicketByStadiumSector(Ticket.StadiumSector stadiumSector);
+public class TicketRepositoryImpl implements TicketRepository {
+    private final ConcurrentHashMap<String, Ticket> tickets;
 
-    public TicketRepository() {
+    public TicketRepositoryImpl() {
         this.tickets = new ConcurrentHashMap<>();
     }
 
@@ -25,7 +28,9 @@ public interface TicketRepository extends Repository<Ticket, String> {
     }
 
     @Override
-    public Optional<Ticket> findById(String id) {
-        return Optional.ofNullable(tickets.get(id));
+    public List<Ticket> findTicketByStadiumSector(Ticket.StadiumSector stadiumSector) {
+        return this.tickets.values().stream()
+                .filter(ticket -> ticket.getStadiumSector() == stadiumSector)
+                .toList();
     }
 }
