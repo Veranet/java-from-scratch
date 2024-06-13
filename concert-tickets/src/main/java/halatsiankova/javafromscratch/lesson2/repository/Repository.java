@@ -1,7 +1,6 @@
 package halatsiankova.javafromscratch.lesson2.repository;
 
 import java.util.Collection;
-
 import java.util.Optional;
 
 public interface Repository<T, I> {
