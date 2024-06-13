@@ -20,12 +20,13 @@ public class AdministrationService {
         long currentDate = dateTimeProvider.provideDateTime().toInstant().toEpochMilli();
         long eventTime = ticketRepository.findById(ticket.getTicketId()).get().getEventTime();
         if (currentDate < eventTime) {
-            var errorMessage =
-                    String.format("The ticket has expired date : ticketId=%s, admin Id=%d", ticket.getTicketId(), admin.getId());
-            throw new IllegalStateException(errorMessage);
+            var errorLog =
+                    String.format("The ticket has expired date : ticketId=%s, admin Id=%d",
+                            ticket.getTicketId(), admin.getId());
+            throw new IllegalStateException(errorLog);
         }
-        var successMessage =
+        var infoLog =
                 String.format("checked by admin : ticketId=%s, admin Id=%d", ticket.getTicketId(), admin.getId());
-        LOGGER.log(System.Logger.Level.INFO, successMessage);
+        LOGGER.log(System.Logger.Level.INFO, infoLog);
     }
 }
