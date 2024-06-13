@@ -1,10 +1,15 @@
 package halatsiankova.javafromscratch.lesson2;
 
 import halatsiankova.javafromscratch.lesson2.model.Ticket;
+import halatsiankova.javafromscratch.lesson2.repository.Repository;
+import halatsiankova.javafromscratch.lesson2.repository.TicketRepository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import static halatsiankova.javafromscratch.lesson2.model.Ticket.StadiumSector.A;
 
@@ -13,8 +18,11 @@ public class TicketService {
 
     private final Validator validator;
 
+    private final Repository<Ticket, String> repository;
+
     public TicketService() {
         validator = new Validator();
+        repository = new TicketRepository();
     }
 
     public static void main(String[] args) {
@@ -24,6 +32,9 @@ public class TicketService {
         ticketService.create("12ae", "MAIN", 222, 1717499006,
                 true, A, 15.86, BigDecimal.valueOf(100.58));
         ticketService.create("SMALL", 135, 1717499006);
+
+        List<Ticket> ticketsToLecture3 = ticketService.createTenTickets();
+        ticketService.saveAll(ticketsToLecture3);
     }
 
     public Ticket create() {
@@ -102,5 +113,33 @@ public class TicketService {
                 throw new IllegalArgumentException("price must be above zero");
             }
         }
+    }
+
+    public void saveAll(List<Ticket> ticketsForSave) {
+        repository.saveAll(ticketsForSave);
+    }
+
+    public Ticket getById(String ticketId) {
+        return repository.findById(ticketId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(String.format("Cannot find ticket by ID = %s", ticketId)));
+    }
+
+    private String generateTicketId(int order) {
+        return Integer.toHexString(order);
+    }
+
+    private List<Ticket> createTenTickets() {
+        var concertHall = "MainHall";
+        var eventCode = 111;
+        var eventTime = Instant.parse("2024-10-10T10:00:00.100000Z")
+                .getEpochSecond();
+        var allowedBackpackWeight = 15.00;
+        var price = BigDecimal.valueOf(159.45);
+        return IntStream.range(0, 10)
+                .mapToObj(i ->
+                        create(generateTicketId(i),concertHall, eventCode, eventTime, false,
+                                Ticket.StadiumSector.values()[i % 3], allowedBackpackWeight, price))
+                .toList();
     }
 }
