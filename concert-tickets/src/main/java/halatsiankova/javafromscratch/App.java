@@ -55,7 +55,7 @@ public class App {
         ticket.setId(15);
         LOGGER.log(Level.INFO, ticket.getId().toString());
         // task 4.2
-        ticket.print();
+        LOGGER.log(Level.INFO,ticket.print());
         // task 4.4
         service.shareByPhone("+12 123-456-7890", ticket);
         service.shareByPhoneAndEmail("+12 123-456-7890", "email@dom.com", ticket);

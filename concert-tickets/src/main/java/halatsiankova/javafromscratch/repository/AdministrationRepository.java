@@ -13,13 +13,7 @@ public class AdministrationRepository {
     }
 
     public void save(Integer userId, String ticketId) {
-        if (associatedTickets.get(userId) == null) {
-            List<String> ticketIds = new ArrayList<>();
-            ticketIds.add(ticketId);
-            associatedTickets.put(userId, ticketIds);
-        } else {
-            associatedTickets.get(userId).add(ticketId);
-        }
+        associatedTickets.computeIfAbsent(userId, k -> new ArrayList<>()).add(ticketId);
     }
 
     public List<String> findAllByUserId(Integer userId) {
