@@ -2,6 +2,7 @@ package halatsiankova.javafromscratch.model;
 
 import halatsiankova.javafromscratch.annotation.NullableWarning;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
+import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -21,6 +22,7 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
     private OffsetDateTime createdDateTime;
 
     public Ticket() {
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
@@ -34,10 +36,12 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         this.allowedBackpackWeight = allowedBackpackWeight;
         this.price = price;
         this.createdDateTime = date;
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public Ticket(String concertHall, int eventCode, long time) {
         this(null, concertHall, eventCode, time, false, null, 0.0, null, null);
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public void setEventTime(long eventTime) {

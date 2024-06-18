@@ -9,7 +9,6 @@ import halatsiankova.javafromscratch.repository.UserRepository;
 import halatsiankova.javafromscratch.service.AdministrationService;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
-import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
@@ -80,7 +79,6 @@ public class App {
         administrationService.checkTicket(usersTicket, admin);
 
         Ticket checkField = new Ticket();
-        NullValidatorProcessor.checkNullFields(checkField);
     }
 
     private static List<Ticket> createTenTickets(TicketService service) {
