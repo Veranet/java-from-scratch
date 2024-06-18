@@ -1,4 +1,4 @@
-package halatsiankova.javafromscratch.lesson2.repository;
+package halatsiankova.javafromscratch.repository;
 
 import java.util.Collection;
 import java.util.Optional;

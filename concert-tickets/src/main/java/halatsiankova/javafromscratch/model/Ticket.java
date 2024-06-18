@@ -1,11 +1,16 @@
-package halatsiankova.javafromscratch.lesson2.model;
+package halatsiankova.javafromscratch.model;
+
+import halatsiankova.javafromscratch.annotation.NullableWarning;
+import halatsiankova.javafromscratch.enumerated.StadiumSector;
+import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class Ticket {
-
+public class Ticket implements Entity<Integer>, Printable, Sharable {
+    private Integer id;
+    @NullableWarning
     private String ticketId;
     private String concertHall;
     private int eventCode;
@@ -17,6 +22,7 @@ public class Ticket {
     private OffsetDateTime createdDateTime;
 
     public Ticket() {
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
@@ -30,46 +36,20 @@ public class Ticket {
         this.allowedBackpackWeight = allowedBackpackWeight;
         this.price = price;
         this.createdDateTime = date;
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public Ticket(String concertHall, int eventCode, long time) {
         this(null, concertHall, eventCode, time, false, null, 0.0, null, null);
-    }
-
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public void setConcertHall(String concertHall) {
-        this.concertHall = concertHall;
-    }
-
-    public void setEventCode(int eventCode) {
-        this.eventCode = eventCode;
+        NullValidatorProcessor.checkNullFields(this);
     }
 
     public void setEventTime(long eventTime) {
         this.eventTime = eventTime;
     }
 
-    public void setPromo(boolean promo) {
-        isPromo = promo;
-    }
-
     public void setStadiumSector(StadiumSector stadiumSector) {
        this.stadiumSector = stadiumSector;
-    }
-
-    public void setAllowedBackpackWeight(double allowedBackpackWeight) {
-        this.allowedBackpackWeight = allowedBackpackWeight;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setCreatedDateTime(OffsetDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
     }
 
     public String getTicketId() {
@@ -108,31 +88,54 @@ public class Ticket {
         return createdDateTime;
     }
 
-    public enum StadiumSector {
-        A, B, C
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public String share(String phone) {
+        return String.format("Ticket with ticketId = %s share by phone %s .%n", ticketId, phone);
+    }
+
+    @Override
+    public String share(String phone, String email) {
+        return String
+                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n", ticketId, phone, email);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Ticket ticket)) return false;
-        return eventCode == ticket.eventCode && eventTime == ticket.eventTime && isPromo == ticket.isPromo
+        return eventCode == ticket.eventCode
+                && eventTime == ticket.eventTime
+                && isPromo == ticket.isPromo
                 && stadiumSector == ticket.stadiumSector
+                && Objects.equals(id, ticket.id)
                 && Double.compare(allowedBackpackWeight, ticket.allowedBackpackWeight) == 0
-                && Objects.equals(ticketId, ticket.ticketId) && Objects.equals(concertHall, ticket.concertHall)
-                && Objects.equals(price, ticket.price) && Objects.equals(createdDateTime, ticket.createdDateTime);
+                && Objects.equals(ticketId, ticket.ticketId)
+                && Objects.equals(concertHall, ticket.concertHall)
+                && Objects.equals(price, ticket.price)
+                && Objects.equals(createdDateTime, ticket.createdDateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ticketId, concertHall, eventCode, eventTime, isPromo,
+        return Objects.hash(id, ticketId, concertHall, eventCode, eventTime, isPromo,
                 stadiumSector, allowedBackpackWeight, price, createdDateTime);
     }
 
     @Override
     public String toString() {
         return "Ticket{" +
-                "TICKET:'" + ticketId + '\'' +
+                "id=" + id +
+                ", ticketId='" + ticketId + '\'' +
                 ", concertHall='" + concertHall + '\'' +
                 ", eventCode=" + eventCode +
                 ", eventTime=" + eventTime +
