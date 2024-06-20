@@ -8,6 +8,7 @@ import halatsiankova.javafromscratch.busTicket.repository.BusTicketRepository;
 import halatsiankova.javafromscratch.busTicket.repository.ValidationRepository;
 import halatsiankova.javafromscratch.busTicket.service.TicketService;
 import halatsiankova.javafromscratch.busTicket.service.ValidationService;
+import halatsiankova.javafromscratch.busTicket.util.GeneratorUUID;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -19,7 +20,8 @@ public class App {
     public static void main(String[] args) throws IOException {
         BusTicketRepository busTicketRepository = new BusTicketRepository();
         ValidationRepository validationRepository = new ValidationRepository();
-        TicketService ticketService = new TicketService(busTicketRepository);
+        GeneratorUUID generatorUUID = new GeneratorUUID();
+        TicketService ticketService = new TicketService(busTicketRepository, generatorUUID);
 
         ValidationService validationService = new ValidationService(validationRepository);
 

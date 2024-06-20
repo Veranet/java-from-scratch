@@ -2,6 +2,7 @@ package halatsiankova.javafromscratch.busTicket.repository;
 
 import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
 import halatsiankova.javafromscratch.busTicket.model.BusTicket;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,15 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BusTicketRepositoryTest {
+
+    private BusTicketRepository repository;
+    private List<BusTicket> busTickets;
+
+    @BeforeEach
+    public void init() {
+        repository = new BusTicketRepository();
+        busTickets = createListBusTickets();
+    }
 
     @Nested
     public class Save {
@@ -38,8 +48,6 @@ class BusTicketRepositoryTest {
     public class SaveAll {
         @Test
         void shouldSaveAllBusTicketsToRepository() {
-            BusTicketRepository repository = new BusTicketRepository();
-            List<BusTicket> busTickets = createListBusTickets();
             repository.saveAll(busTickets);
             Collection<BusTicket> expected = busTickets;
             assertEquals(expected, repository.findAll());
@@ -50,8 +58,6 @@ class BusTicketRepositoryTest {
     public class FindById {
         @Test
         void shouldReturnsBusTicketsByIdWhenIsExist() {
-            BusTicketRepository repository = new BusTicketRepository();
-            repository.saveAll(createListBusTickets());
             UUID ticketId = UUID.fromString("3a333333-6795-4b38-b798-a28abd254eab");
             Optional<BusTicket> expected = Optional.of(new BusTicket(ticketId,
                     "STD",
@@ -63,8 +69,6 @@ class BusTicketRepositoryTest {
 
         @Test
         void shouldOptionalIsEmptyWhenBusTicketDoesNotExist() {
-            BusTicketRepository repository = new BusTicketRepository();
-            repository.saveAll(createListBusTickets());
             UUID ticketId = UUID.fromString("4a44444-6795-4b38-b798-a28abd254eab");
             assertEquals(Optional.empty(), repository.findById(ticketId));
         }
@@ -74,8 +78,6 @@ class BusTicketRepositoryTest {
     public class DeleteById {
         @Test
         void ShouldDeleteBusTicketById() {
-            BusTicketRepository repository = new BusTicketRepository();
-            repository.saveAll(createListBusTickets());
             List<BusTicket> expected = List.of(
                     new BusTicket(UUID.fromString("1a111111-6795-4b38-b798-a28abd254eab"),
                             "STD",
@@ -102,8 +104,6 @@ class BusTicketRepositoryTest {
     public class FindAllByTicketTypeAndPriceFromTo {
         @Test
         void shouldReturnsAllBusTicketsByAccordingToTheSpecifiedParametersWhenTicketsExist() {
-            BusTicketRepository repository = new BusTicketRepository();
-            repository.saveAll(createListBusTickets());
             BigDecimal priceFrom = BigDecimal.valueOf(1.0);
             BigDecimal priceTo = BigDecimal.valueOf(50.0);
             List<BusTicket> actual = repository.findAllByTicketTypeAndPriceFromTo(TicketType.DAY, priceFrom, priceTo);
@@ -119,6 +119,14 @@ class BusTicketRepositoryTest {
                             "2025-01-01",
                             BigDecimal.valueOf(10.0)));
             assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldReturnsEmptyListWhenParametersDoNotMatch() {
+            BigDecimal priceFrom = BigDecimal.valueOf(1000.0);
+            BigDecimal priceTo = BigDecimal.valueOf(50000.0);
+            List<BusTicket> actual = repository.findAllByTicketTypeAndPriceFromTo(TicketType.WEEK, priceFrom, priceTo);
+            assertEquals(List.of(), actual);
         }
     }
 
