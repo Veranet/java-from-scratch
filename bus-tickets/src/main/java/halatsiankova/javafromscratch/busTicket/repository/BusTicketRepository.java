@@ -26,7 +26,7 @@ public class BusTicketRepository {
     }
 
     public Optional<BusTicket> findById(UUID ticketId) {
-        return Optional.of(tickets.get(ticketId));
+        return Optional.ofNullable(tickets.get(ticketId));
     }
 
     public void deleteById(UUID ticketId) {
@@ -39,5 +39,9 @@ public class BusTicketRepository {
                 .filter(busTicket -> busTicket.getPrice().compareTo(priceFrom) >= 0)
                 .filter(busTicket -> busTicket.getPrice().compareTo(priceTo) <= 0)
                 .toList();
+    }
+
+    public List<BusTicket> findAll() {
+        return tickets.values().stream().toList();
     }
 }
