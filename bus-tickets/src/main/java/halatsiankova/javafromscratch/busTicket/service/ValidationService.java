@@ -1,6 +1,5 @@
 package halatsiankova.javafromscratch.busTicket.service;
 
-import halatsiankova.javafromscratch.busTicket.App;
 import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
 import halatsiankova.javafromscratch.busTicket.model.BusTicket;
 import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 public class ValidationService {
-    public static Logger LOGGER = getLogger(App.class.getSimpleName());
+    public static Logger LOGGER = getLogger(ValidationService.class.getSimpleName());
     private final ValidationRepository validationRepository;
     private final Validator validator;
 
