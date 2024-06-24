@@ -11,10 +11,8 @@ import halatsiankova.javafromscratch.busTicket.service.ValidationService;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.logging.Logger;
-
-import static java.util.logging.Logger.getLogger;
+import java.util.Collection;
+import java.util.List;
 
 public class App {
 
