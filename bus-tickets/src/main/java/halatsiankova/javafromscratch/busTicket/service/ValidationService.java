@@ -56,13 +56,13 @@ public class ValidationService {
 
     private ErrorType findMostCommonErrorType() {
         List<ErrorEntity> errorEntities = validationRepository.findAllErrors();
-        long dateValidationErrors = errorEntities.stream()
-                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.START_DATE)).count();
-        long priceValidationErrors = errorEntities.stream()
-                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.PRICE)).count();
-        long ticketTypeValidationErrors = errorEntities.stream()
-                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.TICKET_TYPE)).count();
-        long max = Math.max(dateValidationErrors, Math.max(priceValidationErrors, ticketTypeValidationErrors));
+        int dateValidationErrors = Math.toIntExact(errorEntities.stream()
+                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.START_DATE)).count());
+        int priceValidationErrors = Math.toIntExact(errorEntities.stream()
+                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.PRICE)).count());
+        int ticketTypeValidationErrors = Math.toIntExact(errorEntities.stream()
+                .filter(errorEntity -> errorEntity.getError().equals(ErrorType.TICKET_TYPE)).count());
+        int max = Math.max(dateValidationErrors, Math.max(priceValidationErrors, ticketTypeValidationErrors));
 
         if (max == dateValidationErrors) {
             return ErrorType.START_DATE;
