@@ -7,19 +7,22 @@ import halatsiankova.javafromscratch.busTicket.util.GeneratorUUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,69 +36,45 @@ class TicketServiceTest {
 
     @InjectMocks
     private TicketService ticketService;
-    @Nested
-    public class Save {
-        @Test
-        void shouldSaveBusTicket() {
-            UUID ticketId = UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab");
-            BusTicket busTicket =
-                    new BusTicket("STD",
-                            TicketType.DAY,
-                            "2025-01-01",
-                            BigDecimal.valueOf(100.0));
-            BusTicket ticketForSave = new BusTicket(ticketId,
-                    "STD",
-                    TicketType.DAY,
-                    "2025-01-01",
-                    BigDecimal.valueOf(100.0));
-            when(generatorUUID.generateId()).thenReturn(ticketId);
-            ticketService.save(busTicket);
-            verify(repository).save(ticketForSave);
-        }
-    }
 
     @Nested
     public class SaveAll {
         @Test
         void shouldSaveAllBusTickets() {
-            Collection<BusTicket> tickets = new ArrayList<>();
-            BusTicket firstBusTicket =
+            var tickets = List.of(
                     new BusTicket("STD",
                             TicketType.DAY,
                             "2025-01-01",
-                            BigDecimal.valueOf(100.0));
-            BusTicket secondBusTicket =
+                            BigDecimal.valueOf(100.0)),
                     new BusTicket("STD",
                             TicketType.WEEK,
                             "2028-01-01",
-                            BigDecimal.valueOf(10.0));
-            UUID firstTicketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
-            UUID secondTicketId = UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab");
-            tickets.add(firstBusTicket);
-            tickets.add(secondBusTicket);
-            when(generatorUUID.generateId()).thenReturn(firstTicketId);
-            when(generatorUUID.generateId()).thenReturn(secondTicketId);
-            Collection<BusTicket> ticketsForSave = new ArrayList<>();
-            BusTicket firstBusTicketForSave =
+                            BigDecimal.valueOf(10.0)));
+
+            var firstTicketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
+            var secondTicketId = UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab");
+            when(generatorUUID.generateId()).thenReturn(firstTicketId, secondTicketId);
+            var expected = List.of(
                     new BusTicket(firstTicketId,
                             "STD",
                             TicketType.DAY,
                             "2025-01-01",
-                            BigDecimal.valueOf(100.0));
-            BusTicket secondBusTicketForSave =
+                            BigDecimal.valueOf(100.0)),
                     new BusTicket(secondTicketId,
                             "STD",
                             TicketType.WEEK,
                             "2028-01-01",
-                            BigDecimal.valueOf(10.0));
-            ticketsForSave.add(firstBusTicketForSave);
-            ticketsForSave.add(secondBusTicketForSave);
-            Collection<BusTicket> expected = new ArrayList<>();
-            expected.add(firstBusTicket);
-            expected.add(secondBusTicket);
-            Collection<BusTicket> actual = ticketService.saveAll(tickets);
-            assertEquals(expected, actual);
+                            BigDecimal.valueOf(10.0)));
 
+            var actual = ticketService.saveAll(tickets);
+
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void shouldThrowsIllegalArgumentExceptionWhenNull() {
+            var exception = assertThrows(IllegalArgumentException.class, () -> ticketService.saveAll(null));
+            assertEquals("Collection of tickets must not be null.", exception.getMessage());
         }
     }
 
@@ -103,29 +82,42 @@ class TicketServiceTest {
     public class GetById {
         @Test
         void shouldReturnsBusTicketByIdWhenBusTicketExist() {
-            UUID ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
-            BusTicket ticket =
+            var ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
+            var ticket =
                     new BusTicket(ticketId,
                             "STD",
                             TicketType.WEEK,
                             "2028-01-01",
                             BigDecimal.valueOf(10.0));
             when(repository.findById(ticketId)).thenReturn(Optional.of(ticket));
-            BusTicket expected = new BusTicket(ticketId,
+
+            var expected = new BusTicket(ticketId,
                     "STD",
                     TicketType.WEEK,
                     "2028-01-01",
                     BigDecimal.valueOf(10.0));
+
             assertEquals(expected, ticketService.getById(ticketId));
         }
 
         @Test
         void shouldThrowsIllegalArgumentExceptionWhenBusTicketDoesNotExist() {
-            UUID ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
+            var ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
             when(repository.findById(ticketId)).thenReturn(Optional.empty());
-            IllegalArgumentException exception =
+
+            var exception =
                     assertThrows(IllegalArgumentException.class, () -> ticketService.getById(ticketId));
+
             assertEquals("BusTicket with id=11b11111-1111-4b38-b798-a28abd254eab doesn't exist.",
+                    exception.getMessage());
+        }
+
+        @Test
+        void shouldThrowsIllegalArgumentExceptionWhenNull() {
+            var exception =
+                    assertThrows(IllegalArgumentException.class, () -> ticketService.getById(null));
+
+            assertEquals("Ticket ID must not be null.",
                     exception.getMessage());
         }
     }
@@ -134,67 +126,144 @@ class TicketServiceTest {
     public class DeleteByTicketId {
         @Test
         void shouldDeleteByTicketId() {
-            UUID ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
+            var ticketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
+
             ticketService.deleteByTicketId(ticketId);
+
             verify(repository).deleteById(ticketId);
+        }
+
+        @Test
+        void shouldThrowsIllegalArgumentExceptionWhenNull() {
+            var exception = assertThrows(IllegalArgumentException.class, () -> ticketService.deleteByTicketId(null));
+            assertEquals("Ticket ID must not be null.", exception.getMessage());
         }
     }
 
     @Nested
     public class GetAllByTicketIdAndPriceFromTo {
-        @Test
-        void shouldReturnsListBusTicketsByAccordingToTheSpecifiedParametersWhenBusTicketsExist() {
-            UUID firstTicketId = UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab");
-            UUID secondTicketId = UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab");
-            List<BusTicket> expected = List.of(
-                    new BusTicket(firstTicketId,
-                            "STD",
-                            TicketType.DAY,
-                            "2025-01-01",
-                            BigDecimal.valueOf(100.0)),
-                    new BusTicket(secondTicketId,
-                            "STD",
-                            TicketType.WEEK,
-                            "2028-01-01",
-                            BigDecimal.valueOf(10.0))
-            );
-            List<BusTicket> tickets = List.of(
-                    new BusTicket(firstTicketId,
-                            "STD",
-                            TicketType.DAY,
-                            "2025-01-01",
-                            BigDecimal.valueOf(100.0)),
-                    new BusTicket(secondTicketId,
-                            "STD",
-                            TicketType.WEEK,
-                            "2028-01-01",
-                            BigDecimal.valueOf(10.0))
-            );
-            BigDecimal priceFrom = BigDecimal.valueOf(10.0);
-            BigDecimal priceTo = BigDecimal.valueOf(100.0);
-            when(repository.findAllByTicketTypeAndPriceFromTo(TicketType.WEEK, priceFrom, priceTo)).thenReturn(tickets);
-            List<BusTicket> actual = ticketService.getAllByTicketIdAndPriceFromTo(TicketType.WEEK, priceFrom, priceTo);
-            assertEquals(expected, actual);
+        @ParameterizedTest
+        @MethodSource("successData")
+        void should(List<BusTicket> tickets, TicketType type, BigDecimal priceFrom, BigDecimal priceTo,
+                    List<BusTicket> expected, String description) {
+            when(repository.findAllByTicketTypeAndPriceFromTo(type, priceFrom, priceTo)).thenReturn(tickets);
+
+            var actual = ticketService.getAllByTicketIdAndPriceFromTo(type, priceFrom, priceTo);
+
+            assertEquals(expected, actual, description);
         }
 
-        @Test
-        void shouldReturnsEmptyListBusTicketsByAccordingToTheSpecifiedParametersWhenBusTicketsDoNotExist() {
-            BigDecimal priceFrom = BigDecimal.valueOf(10.0);
-            BigDecimal priceTo = BigDecimal.valueOf(100.0);
-            when(repository.findAllByTicketTypeAndPriceFromTo(TicketType.YEAR, priceFrom, priceTo)).thenReturn(List.of());
-            List<BusTicket> actual = ticketService.getAllByTicketIdAndPriceFromTo(TicketType.YEAR, priceFrom, priceTo);
-            assertEquals(List.of(), actual);
+        @ParameterizedTest
+        @MethodSource("failedData")
+        void shouldThrowsWhenPriceFromGreaterThanPriceTo(TicketType ticketType, BigDecimal priceFrom, BigDecimal priceTo,
+                                                         String exceptionMessage) {
+            var exception = assertThrows(IllegalArgumentException.class,
+                    () -> ticketService.getAllByTicketIdAndPriceFromTo(ticketType, priceFrom, priceTo));
+
+            assertEquals(exceptionMessage, exception.getMessage());
+            verify(repository, never()).findAllByTicketTypeAndPriceFromTo(ticketType, priceFrom, priceTo);
         }
 
-        @Test
-        void shouldThrowsWhenPriceFromGreaterThanPriceTo() {
-            BigDecimal priceFrom = BigDecimal.valueOf(10000.0);
-            BigDecimal priceTo = BigDecimal.valueOf(10.0);
+        private static Stream<Arguments> successData() {
+            return Stream.of(
+                    arguments(List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(20.0)),
+                                    new BusTicket(UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.WEEK,
+                                            "2028-01-01",
+                                            BigDecimal.valueOf(15.0))
+                            ),
+                            TicketType.WEEK,
+                            BigDecimal.valueOf(15.0),
+                            BigDecimal.valueOf(20.0),
+                            List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(20.0)),
+                                    new BusTicket(UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.WEEK,
+                                            "2028-01-01",
+                                            BigDecimal.valueOf(15.0))
+                            ),
+                            "when price from less than price to and supported type."
+                    ),
+                    arguments(List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(20.0))
+                            ),
+                            TicketType.WEEK,
+                            BigDecimal.valueOf(0.0),
+                            BigDecimal.valueOf(20.0),
+                            List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(20.0))
+                            ),
+                            "when price from = 0"
+                    ),
+                    arguments(List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(15.0)),
+                                    new BusTicket(UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.WEEK,
+                                            "2028-01-01",
+                                            BigDecimal.valueOf(15.0))
+                            ),
+                            TicketType.WEEK,
+                            BigDecimal.valueOf(15.0),
+                            BigDecimal.valueOf(15.0),
+                            List.of(
+                                    new BusTicket(UUID.fromString("11b11111-1111-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.DAY,
+                                            "2025-01-01",
+                                            BigDecimal.valueOf(15.0)),
+                                    new BusTicket(UUID.fromString("00b00000-0000-4b38-b798-a28abd254eab"),
+                                            "STD",
+                                            TicketType.WEEK,
+                                            "2028-01-01",
+                                            BigDecimal.valueOf(15.0))
+                            ),
+                            "when price from = price to."
+                    ),
+                    arguments(List.of(), TicketType.WEEK, BigDecimal.valueOf(15.0), BigDecimal.valueOf(20.0), List.of(),
+                            "should return an empty list when no such tickets exist."
+                    )
+            );
+        }
 
-           var exception = assertThrows(IllegalArgumentException.class,
-                    () -> ticketService.getAllByTicketIdAndPriceFromTo(TicketType.YEAR, priceFrom, priceTo));
-            assertEquals("The price from must be less than the price to.", exception.getMessage());
-            verify(repository, never()).findAllByTicketTypeAndPriceFromTo(TicketType.YEAR, priceFrom, priceTo);
+        private static Stream<Arguments> failedData() {
+            return Stream.of(
+                    arguments(null, BigDecimal.valueOf(15.0), BigDecimal.valueOf(20.0),
+                            "Ticket type, price from, price to must not be null."
+                    ),
+                    arguments(TicketType.DAY, null, BigDecimal.valueOf(20.0),
+                            "Ticket type, price from, price to must not be null."
+                    ),
+                    arguments(TicketType.DAY, BigDecimal.valueOf(20.0), null,
+                            "Ticket type, price from, price to must not be null."
+                    ),
+                    arguments(TicketType.DAY, BigDecimal.valueOf(150.0), BigDecimal.valueOf(20.0),
+                            "The price from must be less than the price to."
+                    )
+            );
         }
     }
 }

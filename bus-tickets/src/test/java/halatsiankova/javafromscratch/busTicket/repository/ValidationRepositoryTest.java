@@ -6,37 +6,38 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ValidationRepositoryTest {
-
     private ValidationRepository repository;
 
     @BeforeEach
     void init() {
         repository = new ValidationRepository();
-        ErrorEntity errorEntity =
-                new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE);
-        ErrorEntity secondErrorEntity =
-                new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.START_DATE);
-        repository.save(errorEntity);
-        repository.save(secondErrorEntity);
+        repository.saveAll(List.of(
+                new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE),
+                new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.START_DATE)));
     }
 
     @Nested
-    public class Save {
+    public class SaveAll {
         @Test
-        void shouldSaveErrorEntityInStore() {
-            List<ErrorEntity> actual = repository.findAllErrors();
-            List<ErrorEntity> expected = List.of(new ErrorEntity(
-                    UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE),
+        void shouldSaveAllErrorEntityInStore() {
+            ValidationRepository validationRepository = new ValidationRepository();
+            validationRepository.saveAll(List.of(
+                    new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE),
+                    new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.START_DATE)));
+
+            var expected = List.of(
+                    new ErrorEntity(
+                            UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE),
                     new ErrorEntity(
                             UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.START_DATE));
-            assertEquals(expected, actual);
+
+            assertEquals(expected, repository.findAllErrors());
         }
     }
 
@@ -44,12 +45,13 @@ class ValidationRepositoryTest {
     public class CountByTicketId {
         @Test
         void shouldReturns1WhenMapConsistOfTwoErrorEntriesBySameTicketIds() {
-           assertEquals(1, repository.countByTicketId());
+            assertEquals(1, repository.countByTicketId());
         }
 
         @Test
         void shouldReturnsZeroWhenMapIsEmpty() {
-            ValidationRepository validationRepository = new ValidationRepository();
+            var validationRepository = new ValidationRepository();
+
             assertEquals(0, validationRepository.countByTicketId());
         }
     }
@@ -58,18 +60,28 @@ class ValidationRepositoryTest {
     public class FindAllErrors {
         @Test
         void shouldReturnsListAllErrorsEntries() {
-            List<ErrorEntity> expected = new ArrayList<>();
-            ErrorEntity first = new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.TICKET_TYPE);
-            ErrorEntity second = new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"), ErrorType.START_DATE);
-            expected.add(first);
-            expected.add(second);
+            var expected = List.of(
+                    new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"),
+                            ErrorType.TICKET_TYPE),
+                    new ErrorEntity(UUID.fromString("20b90321-6795-4b38-b798-a28abd254eab"),
+                            ErrorType.START_DATE));
             assertEquals(expected, repository.findAllErrors());
         }
 
         @Test
         void shouldReturnsEmptyListWhenMapIsEmpty() {
-            ValidationRepository validationRepository = new ValidationRepository();
+            var validationRepository = new ValidationRepository();
+
             assertEquals(List.of(), validationRepository.findAllErrors());
+        }
+    }
+
+    @Nested
+    public class DeleteAll {
+        @Test
+        void shouldClearMapWhenMethodWasCalled() {
+            repository.deleteAll();
+            assertEquals(List.of(), repository.findAllErrors());
         }
     }
 }

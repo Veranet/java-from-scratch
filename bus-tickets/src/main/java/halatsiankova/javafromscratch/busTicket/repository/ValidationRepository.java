@@ -12,11 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ValidationRepository {
     private final Map<UUID, List<ErrorEntity>> validationErrors = new ConcurrentHashMap<>();
 
-    public void save(ErrorEntity errorEntity) {
-        validationErrors.computeIfAbsent(errorEntity.getTicketId(), k -> new ArrayList<>())
-                .add(errorEntity);
-    }
-
     public int countByTicketId() {
        return validationErrors.size();
     }
@@ -25,5 +20,15 @@ public class ValidationRepository {
         return validationErrors.values().stream()
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    public void deleteAll() {
+        validationErrors.clear();
+    }
+
+    public void saveAll(List<ErrorEntity> errorEntities) {
+        errorEntities.stream()
+                .forEach(errorEntity -> validationErrors.computeIfAbsent(errorEntity.getTicketId(), k -> new ArrayList<>())
+                        .add(errorEntity));
     }
 }
