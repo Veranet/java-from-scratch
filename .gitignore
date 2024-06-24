@@ -2,7 +2,10 @@
 .gradle
 
  # Ignore Maven
- target/
+ target
+ .mvn
+ mvnw
+ mvnw.cmd
 
 # Ignore Gradle build output directory
 build
