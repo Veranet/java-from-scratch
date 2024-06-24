@@ -1,6 +1,7 @@
 package halatsiankova.javafromscratch.busTicket.validator;
 
 import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
+import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
 import halatsiankova.javafromscratch.busTicket.model.BusTicket;
 
 import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
@@ -21,7 +22,7 @@ public class Validator {
     private static final Logger LOGGER = getLogger(Validator.class.getSimpleName());
 
     public Optional<ErrorEntity> validateType(BusTicket ticket) {
-        if (ticket.getTicketType() == null || ticket.getTicketType().toString().equals("UNDEFINED")) {
+        if (ticket.getTicketType() == null || ticket.getTicketType() == TicketType.UNDEFINED) {
             String error = String.format(
                     "%s . Ticket type must match one of the following values \"DAY\", \"WEEK\", \"MONTH\", \"YEAR\".",
                             ticket);
