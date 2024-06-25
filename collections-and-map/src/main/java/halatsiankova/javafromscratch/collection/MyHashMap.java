@@ -22,7 +22,6 @@ public class MyHashMap<K, V> implements Map<K, V> {
      * @throws IllegalArgumentException if some property of the specified key
      *                                  or value prevents it from being stored in this map
      */
-    @Override
     public V put(K key, V value) {
         final int hash = calcHash(key);
         final int index = calcTable(hash, table.length);

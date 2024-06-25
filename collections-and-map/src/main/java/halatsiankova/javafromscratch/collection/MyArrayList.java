@@ -1,13 +1,17 @@
 package halatsiankova.javafromscratch.collection;
 
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+
 /**
  * A simple implementation of an ArrayList.
  *
  * @param <T> the type of elements in this list
  */
-public class MyArrayList<T> {
+public class MyArrayList<T> implements Collection<T> {
     private T[] data;
     private int size;
+    protected int modCount;
 
     /**
      * Constructs an empty list with an initial capacity of ten.
@@ -18,11 +22,9 @@ public class MyArrayList<T> {
     }
 
     /**
-     * Adds the specified element to the end of this list.
-     *
-     * @param element element to be appended to this list
-     * @return true if this collection changed as a result of the call
+     * {@inheritDoc}
      */
+    @Override
     public boolean put(T element) {
         put(size, element);
         return true;
@@ -45,6 +47,7 @@ public class MyArrayList<T> {
         size++;
         System.arraycopy(data, index, data, index + 1, size - index - 1);
         data[index] = element;
+        modCount++;
         return true;
     }
 
@@ -62,6 +65,18 @@ public class MyArrayList<T> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public Object[] toArray() {
+        Object[] array = new Object[size];
+        int index = 0;
+        for (Object e : this) {
+            array[index++] = e;
+        }
+        return array;
+    }
+
+    /**
      * Removes the element at the specified position in this list.
      *
      * @param index the index of the element to be removed
@@ -74,23 +89,22 @@ public class MyArrayList<T> {
         T result = data[index];
         this.size--;
         System.arraycopy(data, index + 1, data, index, data.length - index - 1);
+        modCount++;
         return result;
     }
 
     /**
-     * Returns the number of elements in this list.
-     *
-     * @return the number of elements in this list
+     * {@inheritDoc}
      */
+    @Override
     public int size() {
         return size;
     }
 
     /**
-     * Returns {@code true} if this list contains no elements.
-     *
-     * @return {@code true} if this list contains no elements
+     * {@inheritDoc}
      */
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
@@ -133,6 +147,83 @@ public class MyArrayList<T> {
     private void checkIndexInCollection(int index, int length) {
         if (index < 0 || index >= length) {
             throw new IndexOutOfBoundsException("Index: " + index + ", size: " + length);
+        }
+    }
+
+    /**
+     * Returns a string representation of the object
+     *
+     * @return a string representation of the object
+     */
+    @Override
+    public String toString() {
+        Iterator<T> it = this.iterator();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        for (int i = 0; i < size; i++) {
+            T element = it.next();
+            if (element == null) {
+                stringBuilder.append("null");
+            } else {
+                stringBuilder.append(element);
+            }
+            if (i != size - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ArrayListIterator iterator() {
+        return new ArrayListIterator();
+    }
+
+    private class ArrayListIterator implements Iterator<T> {
+
+        private int current;
+
+        private int expectedModCount = modCount;
+
+        /**
+         * Returns true if the iteration has more elements.
+         *
+         * @return true if the iteration has more elements. else returns false
+         */
+        @Override
+        public boolean hasNext() {
+            return current < size;
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return element
+         */
+        @Override
+        public T next() {
+            checkForModification();
+            return data[current++];
+        }
+
+
+        /**
+         * Removes from the collection the last element returned by this iterator (optional operation).
+         * This method can be called only once per call to next.
+         */
+        @Override
+        public void remove() {
+            checkForModification();
+            MyArrayList.this.delete(--current);
+            expectedModCount = modCount;
+        }
+
+        private void checkForModification() {
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
         }
     }
 }

@@ -21,16 +21,25 @@ public interface Set<T> extends Collection<T> {
     boolean put(T element);
 
     /**
-     * {@inheritDoc}
+     * Removes an object from the collection.
+     * Returns true - if the collection has changed
+     * @throws ClassCastException – if the type of the specified element is
+     * incompatible with this collection
+     * @throws UnsupportedOperationException - if the remove operation
+     * is not supported by this collection
+     * @param element – element to be removed from this list, if present
+     * @return true if the collection has changed
      */
-    @Override
-    boolean contains(Object element);
+    boolean delete(T element);
 
     /**
-     * {@inheritDoc}
+     * Returns true if the collection contains an object
+     * @throws ClassCastException – if the type of the specified element
+     * is incompatible with this collection
+     * @param element – element whose presence in this list is to be tested
+     * @return true if this list contains the specified element
      */
-    @Override
-    boolean delete(Object element);
+    boolean contains(Object element);
 
     @Override
     Iterator<T> iterator();

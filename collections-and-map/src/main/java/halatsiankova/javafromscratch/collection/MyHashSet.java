@@ -1,6 +1,7 @@
 package halatsiankova.javafromscratch.collection;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class MyHashSet<T> extends AbstractCollection<T> implements Set<T> {
     private final MyHashMap<T, Boolean> map;
@@ -44,6 +45,13 @@ public class MyHashSet<T> extends AbstractCollection<T> implements Set<T> {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MyHashSet<?> myHashSet)) return false;
+        return Objects.equals(map, myHashSet.map);
     }
 
     /**
