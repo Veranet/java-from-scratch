@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>collections-and-map</artifactId>
+    <artifactId>collections</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

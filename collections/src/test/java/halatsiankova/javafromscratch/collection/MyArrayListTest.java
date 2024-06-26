@@ -6,22 +6,27 @@ import org.junit.jupiter.api.Test;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MyArrayListTest {
 
     @Nested
-    public class Put {
+    class Put {
         @Test
         void shouldAddElementWhenListIsEmpty() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             assertArrayEquals(new Object[]{1}, list.toArray());
         }
 
         @Test
-        void shouldAddElementWhenMethodWasCalled() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldAddElement() {
+            List<Integer> list = new ArrayList<>();
             list.put(58);
             list.put(55);
             String expected = "[58, 55]";
@@ -31,14 +36,14 @@ class MyArrayListTest {
 
         @Test
         void shouldAddNullWhenNull() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(null);
             assertNull(list.get(0));
         }
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexIsNegative() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(
                     IndexOutOfBoundsException.class, () -> list.put(-2, 2));
@@ -48,7 +53,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexLargerSize() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(
                     IndexOutOfBoundsException.class, () -> list.put(2, 2));
@@ -57,8 +62,8 @@ class MyArrayListTest {
         }
 
         @Test
-        public void shouldThrowConcurrentModificationExceptionWhenIteratorIsRunning() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldThrowConcurrentModificationExceptionWhenIteratorIsRunning() {
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             Iterator<Integer> iterator = list.iterator();
@@ -68,25 +73,24 @@ class MyArrayListTest {
     }
 
     @Nested
-    public class Get {
-
+    class Get {
         @Test
         void shouldReturnObjectFromIndexWhenMethodWasCalled() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             assertEquals(1, list.get(0));
         }
 
         @Test
         void shouldReturnObjectIsNullFromIndexWhenNull() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(null);
             assertEquals(null, list.get(0));
         }
 
         @Test
         void shouldReturnsElementOnIndexWhenIndexInTheEnd() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             list.put(3);
@@ -95,7 +99,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexIsNegative() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.get(-2));
             String expected = "Index: -2, size: 1";
@@ -104,7 +108,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexGreaterThenSize() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.get(2));
             String expected = "Index: 2, size: 1";
@@ -113,7 +117,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexEqualsSize() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.get(1));
             String expected = "Index: 1, size: 1";
@@ -122,17 +126,16 @@ class MyArrayListTest {
     }
 
     @Nested
-    public class Size {
-
+    class Size {
         @Test
         void shouldReturnZeroWhenObjectWasCreated() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             assertEquals(0, list.size());
         }
 
         @Test
         void shouldReturn3WhenSize3() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(1);
             list.put(1);
@@ -141,11 +144,11 @@ class MyArrayListTest {
     }
 
     @Nested
-    public class ToArray {
+    class ToArray {
 
         @Test
-        void shouldReturnArrayOfObjectsWhenListIsEmpty() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldReturnArrayOfObjects() {
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             Object[] actual = list.toArray();
@@ -155,7 +158,7 @@ class MyArrayListTest {
 
         @Test
         void shouldReturnNullWhenObjectIsNull() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(null);
             Object[] expected = new Object[]{null};
             Object[] actual = list.toArray();
@@ -164,11 +167,11 @@ class MyArrayListTest {
     }
 
     @Nested
-    public class Delete {
+    class Delete {
 
         @Test
-        void shouldRemovedObjectByIndexWhenIndexInMiddle() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldRemoveObjectByIndexWhenIndexInMiddle() {
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             list.put(3);
@@ -179,8 +182,8 @@ class MyArrayListTest {
         }
 
         @Test
-        void shouldRemovedObjectByIndexWhenIndexEqualZero() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldRemoveObjectByIndexWhenIndexEqualZero() {
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             list.put(3);
@@ -191,8 +194,8 @@ class MyArrayListTest {
         }
 
         @Test
-        void shouldRemovedObjectByIndexWhenIndexInTheEnd() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldRemoveObjectByIndexWhenIndexInTheEnd() {
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             list.put(3);
@@ -204,7 +207,7 @@ class MyArrayListTest {
 
         @Test
         void shouldChangeSizeWhenMethodWasCalled() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             list.put(3);
@@ -213,8 +216,8 @@ class MyArrayListTest {
         }
 
         @Test
-        void shouldRemovedObjectByIndexWhenObjectIsNull() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldRemoveObjectByIndexWhenObjectIsNull() {
+            List<Integer> list = new ArrayList<>();
             list.put(null);
             Object actual = list.delete(0);
             assertEquals(null, actual);
@@ -222,7 +225,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexIsNegative() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.delete(-2));
             String expected = "Index: -2, size: 1";
@@ -231,7 +234,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexGreaterThenSize() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.delete(2));
             String expected = "Index: 2, size: 1";
@@ -240,7 +243,7 @@ class MyArrayListTest {
 
         @Test
         void shouldThrowIndexOutOfBoundsExceptionWhenIndexEqualsSize() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             Exception e = assertThrows(IndexOutOfBoundsException.class, () -> list.delete(1));
             String expected = "Index: 1, size: 1";
@@ -249,7 +252,7 @@ class MyArrayListTest {
 
         @Test
         public void shouldThrowConcurrentModificationExceptionWhenIteratorIsRunning() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.put(1);
             list.put(2);
             Iterator<Integer> iterator = list.iterator();
@@ -259,19 +262,46 @@ class MyArrayListTest {
     }
 
     @Nested
-    public class IsEmpty {
-
+    class IsEmpty {
         @Test
-        void shouldTrueWhenCollectionIsEmpty() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldReturnTrueWhenCollectionIsEmpty() {
+            List<Integer> list = new ArrayList<>();
             assertTrue(list.isEmpty());
         }
 
         @Test
-        void shouldFalseWhenCollectionIsNotEmpty() {
-            MyArrayList<Integer> list = new MyArrayList<>();
+        void shouldReturnFalseWhenCollectionIsNotEmpty() {
+            List<Integer> list = new ArrayList<>();
             list.put(5);
             assertFalse(list.isEmpty());
+        }
+    }
+
+    @Nested
+    class ToString {
+        @Test
+        void shouldReturnStringWithAllElements() {
+            List<String> list = new ArrayList<>();
+            list.put("Hi");
+            list.put("friend");
+
+            String expected = "[Hi, friend]";
+            assertEquals(expected, list.toString());
+        }
+
+        @Test
+        void shouldReturnEmptyStringWhenSizeEqualZero() {
+            List<String> list = new ArrayList<>();
+            String expected = "[]";
+            assertEquals(expected, list.toString());
+        }
+
+        @Test
+        void shouldReturnEmptyStringWhenObjectIsNull() {
+            List<String> list = new ArrayList<>();
+            list.put(null);
+            String expected = "[null]";
+            assertEquals(expected, list.toString());
         }
     }
 }

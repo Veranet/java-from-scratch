@@ -5,18 +5,16 @@ import java.util.Iterator;
 
 /**
  * A simple implementation of an ArrayList.
- *
- * @param <T> the type of elements in this list
  */
-public class MyArrayList<T> implements Collection<T> {
+public class ArrayList<T> implements List<T> {
     private T[] data;
     private int size;
     protected int modCount;
 
     /**
-     * Constructs an empty list with an initial capacity of ten.
+     * Construct an empty list with an initial capacity of ten.
      */
-    public MyArrayList() {
+    public ArrayList() {
         this.data = (T[]) new Object[10];
         this.size = 0;
     }
@@ -31,7 +29,7 @@ public class MyArrayList<T> implements Collection<T> {
     }
 
     /**
-     * Inserts the specified element at the specified position in this list.
+     * Insert the specified element at the specified position in this list.
      *
      * @param index   index at which the specified element is to be inserted
      * @param element element to be inserted
@@ -52,12 +50,7 @@ public class MyArrayList<T> implements Collection<T> {
     }
 
     /**
-     * Returns the element at the specified position in this list.
-     *
-     * @param index index of the element to return
-     * @return the element at the specified position in this list
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   ({@code index < 0 || index >= size})
+     * {@inheritDoc}
      */
     public T get(int index) {
         checkIndexInCollection(index, size);
@@ -77,12 +70,7 @@ public class MyArrayList<T> implements Collection<T> {
     }
 
     /**
-     * Removes the element at the specified position in this list.
-     *
-     * @param index the index of the element to be removed
-     * @return the element previously at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   ({@code index < 0 || index >= size})
+     * {@inheritDoc}
      */
     public T delete(int index) {
         checkIndexInCollection(index, size);
@@ -110,7 +98,7 @@ public class MyArrayList<T> implements Collection<T> {
     }
 
     /**
-     * Increases the capacity of this list, if necessary, to ensure that it can
+     * Increase the capacity of this list, if necessary, to ensure that it can
      * hold at least the number of elements specified by the minimum capacity argument.
      */
     private void resize() {
@@ -124,7 +112,7 @@ public class MyArrayList<T> implements Collection<T> {
     }
 
     /**
-     * Checks if the given index is valid for adding a new element.
+     * Check if the given index is valid for adding a new element.
      *
      * @param index the index to check
      * @throws IndexOutOfBoundsException if the index is out of range
@@ -132,12 +120,12 @@ public class MyArrayList<T> implements Collection<T> {
      */
     private void checkIndexForAdd(int index) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
+            throw new IndexOutOfBoundsException(String.format("Index: $d, size: $d", index, size));
         }
     }
 
     /**
-     * Checks if the given index is valid for accessing an element.
+     * Check if the given index is valid for accessing an element.
      *
      * @param index  the index to check
      * @param length the length of the collection
@@ -146,12 +134,12 @@ public class MyArrayList<T> implements Collection<T> {
      */
     private void checkIndexInCollection(int index, int length) {
         if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", size: " + length);
+            throw new IndexOutOfBoundsException(String.format("Index: $d, size: $d", index, length));
         }
     }
 
     /**
-     * Returns a string representation of the object
+     * Return a string representation of the object
      *
      * @return a string representation of the object
      */
@@ -178,7 +166,7 @@ public class MyArrayList<T> implements Collection<T> {
     /**
      * {@inheritDoc}
      */
-    public ArrayListIterator iterator() {
+    public Iterator iterator() {
         return new ArrayListIterator();
     }
 
@@ -189,7 +177,7 @@ public class MyArrayList<T> implements Collection<T> {
         private int expectedModCount = modCount;
 
         /**
-         * Returns true if the iteration has more elements.
+         * Return true if the iteration has more elements.
          *
          * @return true if the iteration has more elements. else returns false
          */
@@ -199,7 +187,7 @@ public class MyArrayList<T> implements Collection<T> {
         }
 
         /**
-         * Returns the next element in the iteration.
+         * Return the next element in the iteration.
          *
          * @return element
          */
@@ -211,13 +199,13 @@ public class MyArrayList<T> implements Collection<T> {
 
 
         /**
-         * Removes from the collection the last element returned by this iterator (optional operation).
+         * Remove from the collection the last element returned by this iterator (optional operation).
          * This method can be called only once per call to next.
          */
         @Override
         public void remove() {
             checkForModification();
-            MyArrayList.this.delete(--current);
+            ArrayList.this.delete(--current);
             expectedModCount = modCount;
         }
 

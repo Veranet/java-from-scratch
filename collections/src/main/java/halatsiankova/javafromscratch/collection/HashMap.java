@@ -4,23 +4,21 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class MyHashMap<K, V> implements Map<K, V> {
+/**
+ * A simple implementation of a HashMap.
+ */
+public class HashMap<K, V> implements Map<K, V> {
     private Entry<K, V>[] table;
     private int size;
     static final float LOAD_FACTOR = 0.75f;
     private int modCount;
 
-    public MyHashMap() {
+    public HashMap() {
         table = new Entry[16];
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @throws ClassCastException       if the class of the specified key or value
-     *                                  prevents it from being stored in this map
-     * @throws IllegalArgumentException if some property of the specified key
-     *                                  or value prevents it from being stored in this map
      */
     public V put(K key, V value) {
         final int hash = calcHash(key);
@@ -119,7 +117,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Computes hashCode HashMap
+     * Compute hashCode
      *
      * @return int a hash code value for this object.
      */
@@ -133,7 +131,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this one
+     * Indicate whether some other object is "equal to" this one
      *
      * @param obj the reference object with which to compare
      * @return true if this object is the same as the obj argument; false otherwise.
@@ -143,10 +141,9 @@ public class MyHashMap<K, V> implements Map<K, V> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Map)) {
+        if (!(obj instanceof Map that)) {
             return false;
         }
-        final Map that = (Map) obj;
         if (that.size() != this.size) {
             return false;
         }
@@ -163,7 +160,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Returns a string representation of the object
+     * Return a string representation of the object
      *
      * @return a string representation of the object
      */
@@ -218,7 +215,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Returns a MapIterator
+     * Return a MapIterator
      */
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
@@ -242,7 +239,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
         }
 
         /**
-         * Returns true if the iteration has more elements.
+         * Return true if the iteration has more elements.
          *
          * @return true if the iteration has more elements. else returns false.
          */
@@ -263,7 +260,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
         }
 
         /**
-         * Returns the next element in the iteration.
+         * Return the next element in the iteration.
          *
          * @return element
          * @throws ConcurrentModificationException when the collection was modified while the iterator was running.
@@ -287,7 +284,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
         }
 
         /**
-         * Removes from the collection the last element returned by this iterator (optional operation).
+         * Remove from the collection the last element returned by this iterator (optional operation).
          * This method can be called only once per call to next.
          *
          * @throws IllegalStateException           when element is null and when remove called without calling next
@@ -357,8 +354,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
             if (o == this) {
                 return true;
             }
-            if (o instanceof Map.Entry) {
-                Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+            if (o instanceof Map.Entry<?, ?> e) {
                 return Objects.equals(key, e.getKey()) &&
                         Objects.equals(value, e.getValue());
             }

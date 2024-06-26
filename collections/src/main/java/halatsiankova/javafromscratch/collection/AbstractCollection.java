@@ -1,10 +1,8 @@
 package halatsiankova.javafromscratch.collection;
 
-import java.util.Iterator;
-
 public abstract class AbstractCollection<T> implements Collection<T> {
     /**
-     * Returns a string representation of the object
+     * Return a string representation of the object
      *
      * @return a string representation of the object
      */
@@ -29,16 +27,14 @@ public abstract class AbstractCollection<T> implements Collection<T> {
     }
 
     /**
-     * Returns the hash code value for this list.
+     * Return the hash code value for this list.
      *
      * @return the hash code value for this list
      */
     @Override
     public int hashCode() {
         int hash = 0;
-        Iterator<T> i = iterator();
-        while (i.hasNext()) {
-            T obj = i.next();
+        for (T obj : this) {
             if (obj != null)
                 hash += obj.hashCode();
         }
