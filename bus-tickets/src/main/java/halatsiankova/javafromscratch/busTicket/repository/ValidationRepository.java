@@ -1,6 +1,6 @@
-package halatsiankova.javafromscratch.busTicket.repository;
+package halatsiankova.javafromscratch.busticket.repository;
 
-import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
+import halatsiankova.javafromscratch.busticket.model.ErrorEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;

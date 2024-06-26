@@ -72,7 +72,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>
-                                halatsiankova.javafromscratch.busTicket.App
+                                halatsiankova.javafromscratch.busticket.App
                             </mainClass>
                         </manifest>
                     </archive>

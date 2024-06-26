@@ -1,9 +1,9 @@
-package halatsiankova.javafromscratch.busTicket.validator;
+package halatsiankova.javafromscratch.busticket.validator;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
-import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
-import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
+import halatsiankova.javafromscratch.busticket.enumerated.ErrorType;
+import halatsiankova.javafromscratch.busticket.enumerated.TicketType;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.model.ErrorEntity;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

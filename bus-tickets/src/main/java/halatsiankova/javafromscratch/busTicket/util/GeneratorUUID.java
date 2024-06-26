@@ -1,4 +1,4 @@
-package halatsiankova.javafromscratch.busTicket.util;
+package halatsiankova.javafromscratch.busticket.util;
 
 import java.util.UUID;
 
