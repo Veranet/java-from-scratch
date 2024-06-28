@@ -3,9 +3,11 @@ package halatsiankova.javafromscratch.busTicket.service;
 import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
 import halatsiankova.javafromscratch.busTicket.model.BusTicket;
 import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
+import halatsiankova.javafromscratch.busTicket.repository.BusTicketRepository;
 import halatsiankova.javafromscratch.busTicket.repository.ValidationRepository;
-import halatsiankova.javafromscratch.busTicket.validator.Validator;
+import halatsiankova.javafromscratch.busTicket.validator.BusTicketValidator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -17,40 +19,63 @@ import static java.util.logging.Logger.getLogger;
 public class ValidationService {
     public static Logger LOGGER = getLogger(ValidationService.class.getSimpleName());
     private final ValidationRepository validationRepository;
-    private final Validator validator;
+    private final BusTicketRepository busTicketRepository;
+    private final BusTicketValidator validator;
 
-    public ValidationService(ValidationRepository validationRepository) {
+    public ValidationService(ValidationRepository validationRepository, BusTicketRepository busTicketRepository, BusTicketValidator validator) {
         this.validationRepository = validationRepository;
-        this.validator = new Validator();
+        this.busTicketRepository = busTicketRepository;
+        this.validator = validator;
     }
 
+    /**
+     * Validates a collection of BusTicket objects. This method clears all existing validation errors,
+     * validates each ticket for type, start date, and price errors, and then saves any validation errors
+     * found into the validation repository.
+     * Validation criteria:<p>
+     * - ticket type must be equal to DAY, WEEK, MONTH or YEAR,<p>
+     * - price must be even,<p>
+     * - date must not be in the future and must only be for tickets with the type DAY, WEEK, or YEAR.
+     * @param tickets the collection of BusTicket objects to validate
+     */
     public void validate(Collection<BusTicket> tickets) {
+        validationRepository.deleteAll();
+        List<ErrorEntity> errorEntities = new ArrayList<>();
         tickets.forEach(ticket -> {
             Optional<ErrorEntity> typeValidationError = validator.validateType(ticket);
-            typeValidationError.ifPresent(this::saveErrorEntity);
+            typeValidationError.ifPresent(errorEntities::add);
             
             Optional<ErrorEntity> dateValidationError = validator.validateStartDate(ticket);
-            dateValidationError.ifPresent(this::saveErrorEntity);
+            dateValidationError.ifPresent(errorEntities::add);
 
             Optional<ErrorEntity> priceValidationError = validator.validatePrice(ticket);
-            priceValidationError.ifPresent(this::saveErrorEntity);
+            priceValidationError.ifPresent(errorEntities::add);
         });
+        validationRepository.saveAll(errorEntities);
     }
 
-    public void getTicketValidationStatistics(Collection<BusTicket> tickets) {
+    /**
+     * Returns information about the number of tickets,
+     * how many of them are valid and what is the most common error.
+     * <p>
+     * Example:
+     * <pre>
+     * INFO:
+     *     Total = 17
+     *     Valid = 3
+     *     Most popular violation = START_DATE
+     * </pre>
+     */
+    public void getTicketValidationStatistics() {
         ErrorType mostCommonErrorType = findMostCommonErrorType();
-        int total = tickets.size();
+
+        int total = busTicketRepository.count();
         int valid = total - validationRepository.countByTicketId();
 
-        String error = String.format("\n\tTotal = %d%n\tValid = %d%n\tMost popular violation = %s",
+        var error = String.format("\n\tTotal = %d%n\tValid = %d%n\tMost popular violation = %s",
                 total, valid, mostCommonErrorType.name());
 
         LOGGER.log(Level.INFO, error);
-    }
-
-    private void saveErrorEntity(ErrorEntity errorEntity) {
-        validationRepository.save(errorEntity);
-
     }
 
     private ErrorType findMostCommonErrorType() {

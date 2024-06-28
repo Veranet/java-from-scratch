@@ -23,6 +23,14 @@ public class BusTicket {
         this.price = price;
     }
 
+    public BusTicket(UUID id, String ticketClass, TicketType ticketType, String startDate, BigDecimal price) {
+        this.id = id;
+        this.ticketClass = ticketClass;
+        this.ticketType = ticketType;
+        this.startDate = startDate;
+        this.price = price;
+    }
+
     public void setTicketClass(String ticketClass) {
         this.ticketClass = ticketClass;
     }
@@ -76,18 +84,13 @@ public class BusTicket {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BusTicket ticket = (BusTicket) o;
-        return Objects.equals(id, ticket.id)
-                && Objects.equals(ticketClass, ticket.ticketClass)
-                && ticketType == ticket.ticketType
-                && Objects.equals(startDate, ticket.startDate)
-                && Objects.equals(price, ticket.price);
+        if (this == o) return true;
+        if (!(o instanceof BusTicket busTicket)) return false;
+        return Objects.equals(id, busTicket.id)
+                && Objects.equals(ticketClass, busTicket.ticketClass)
+                && ticketType == busTicket.ticketType
+                && Objects.equals(startDate, busTicket.startDate)
+                && Objects.equals(price, busTicket.price);
     }
 
     @Override
