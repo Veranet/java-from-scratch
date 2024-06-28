@@ -1,11 +1,11 @@
-package halatsiankova.javafromscratch.busTicket.service;
+package halatsiankova.javafromscratch.busticket.service;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
-import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
-import halatsiankova.javafromscratch.busTicket.repository.BusTicketRepository;
-import halatsiankova.javafromscratch.busTicket.repository.ValidationRepository;
-import halatsiankova.javafromscratch.busTicket.validator.BusTicketValidator;
+import halatsiankova.javafromscratch.busticket.enumerated.ErrorType;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.model.ErrorEntity;
+import halatsiankova.javafromscratch.busticket.repository.BusTicketRepository;
+import halatsiankova.javafromscratch.busticket.repository.ValidationRepository;
+import halatsiankova.javafromscratch.busticket.validator.BusTicketValidator;
 
 import java.util.ArrayList;
 import java.util.Collection;

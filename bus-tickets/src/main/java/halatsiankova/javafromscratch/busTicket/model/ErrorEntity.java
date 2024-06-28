@@ -1,6 +1,6 @@
-package halatsiankova.javafromscratch.busTicket.model;
+package halatsiankova.javafromscratch.busticket.model;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
+import halatsiankova.javafromscratch.busticket.enumerated.ErrorType;
 
 import java.util.Objects;
 import java.util.UUID;

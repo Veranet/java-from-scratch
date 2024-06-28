@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = '21'
+}
+
+mainClassName = 'halatsiankova.javafromscratch.App'
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}

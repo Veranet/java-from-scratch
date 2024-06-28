@@ -1,8 +1,7 @@
-package halatsiankova.javafromscratch.busTicket.repository;
+package halatsiankova.javafromscratch.busticket.repository;
 
-import com.sun.jdi.connect.Connector;
-import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.enumerated.TicketType;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -13,7 +12,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BusTicketRepository {
     private final Map<UUID, BusTicket> tickets = new ConcurrentHashMap<>();

@@ -1,11 +1,11 @@
-package halatsiankova.javafromscratch.busTicket.validator;
+package halatsiankova.javafromscratch.busticket.validator;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.ErrorType;
-import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.enumerated.ErrorType;
+import halatsiankova.javafromscratch.busticket.enumerated.TicketType;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
 
-import halatsiankova.javafromscratch.busTicket.model.ErrorEntity;
-import halatsiankova.javafromscratch.busTicket.provider.DateTimeProvider;
+import halatsiankova.javafromscratch.busticket.model.ErrorEntity;
+import halatsiankova.javafromscratch.busticket.provider.DateTimeProvider;
 
 import java.time.LocalDate;
 import java.util.Arrays;
