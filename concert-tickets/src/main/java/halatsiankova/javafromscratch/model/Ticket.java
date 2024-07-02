@@ -1,16 +1,15 @@
 package halatsiankova.javafromscratch.model;
 
-import halatsiankova.javafromscratch.annotation.NullableWarning;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
+import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Ticket implements Entity<Integer>, Printable, Sharable {
     private Integer id;
-    @NullableWarning
     private String ticketId;
     private String concertHall;
     private int eventCode;
@@ -19,14 +18,16 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
     private StadiumSector stadiumSector;
     private double allowedBackpackWeight;
     private BigDecimal price;
-    private OffsetDateTime createdDateTime;
+    private LocalDateTime createdDateTime;
+    private int userId;
+    private TicketType type;
 
     public Ticket() {
         NullValidatorProcessor.checkNullFields(this);
     }
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
-                  StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price, OffsetDateTime date) {
+                  StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price, LocalDateTime date) {
         this.ticketId = ticketId;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -44,12 +45,32 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         NullValidatorProcessor.checkNullFields(this);
     }
 
+    public Ticket(Integer id, int userId, TicketType type, StadiumSector stadiumSector, LocalDateTime createdDateTime) {
+        this.id = id;
+        this.createdDateTime = createdDateTime;
+        this.userId = userId;
+        this.type = type;
+        this.stadiumSector = stadiumSector;
+    }
+
+    public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
+                  StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price) {
+        this.ticketId = ticketId;
+        this.concertHall = concertHall;
+        this.eventCode = eventCode;
+        this.eventTime = eventTime;
+        this.isPromo = isPromo;
+        this.stadiumSector = stadiumSector;
+        this.allowedBackpackWeight = allowedBackpackWeight;
+        this.price = price;
+    }
+
     public void setEventTime(long eventTime) {
         this.eventTime = eventTime;
     }
 
     public void setStadiumSector(StadiumSector stadiumSector) {
-       this.stadiumSector = stadiumSector;
+        this.stadiumSector = stadiumSector;
     }
 
     public String getTicketId() {
@@ -84,8 +105,12 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         return price;
     }
 
-    public OffsetDateTime getCreatedDateTime() {
+    public LocalDateTime getCreatedDateTime() {
         return createdDateTime;
+    }
+
+    public void setCreatedDateTime(LocalDateTime date) {
+        this.createdDateTime = date;
     }
 
     @Override
@@ -98,15 +123,31 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         this.id = id;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public TicketType getType() {
+        return type;
+    }
+
+    public void setType(TicketType type) {
+        this.type = type;
+    }
+
     @Override
     public String share(String phone) {
-        return String.format("Ticket with ticketId = %s share by phone %s .%n", ticketId, phone);
+        return String.format("Ticket with ticketId = %s share by phone %s .%n.", ticketId, phone);
     }
 
     @Override
     public String share(String phone, String email) {
         return String
-                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n", ticketId, phone, email);
+                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n.", ticketId, phone, email);
     }
 
     @Override
