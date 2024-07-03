@@ -1,0 +1,3 @@
+rootProject.name = 'java-from-scratch'
+include 'bus-tickets'
+include 'concert-tickets'

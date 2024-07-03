@@ -1,6 +1,6 @@
-package halatsiankova.javafromscratch.busTicket.model;
+package halatsiankova.javafromscratch.busticket.model;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
+import halatsiankova.javafromscratch.busticket.enumerated.TicketType;
 
 import java.math.BigDecimal;
 import java.util.Objects;

@@ -1,15 +1,15 @@
-package halatsiankova.javafromscratch.busTicket;
+package halatsiankova.javafromscratch.busticket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
-import halatsiankova.javafromscratch.busTicket.repository.BusTicketRepository;
-import halatsiankova.javafromscratch.busTicket.repository.ValidationRepository;
-import halatsiankova.javafromscratch.busTicket.service.TicketService;
-import halatsiankova.javafromscratch.busTicket.service.ValidationService;
-import halatsiankova.javafromscratch.busTicket.util.GeneratorUUID;
-import halatsiankova.javafromscratch.busTicket.validator.BusTicketValidator;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.repository.BusTicketRepository;
+import halatsiankova.javafromscratch.busticket.repository.ValidationRepository;
+import halatsiankova.javafromscratch.busticket.service.TicketService;
+import halatsiankova.javafromscratch.busticket.service.ValidationService;
+import halatsiankova.javafromscratch.busticket.util.GeneratorUUID;
+import halatsiankova.javafromscratch.busticket.validator.BusTicketValidator;
 
 import java.io.IOException;
 import java.nio.file.Paths;

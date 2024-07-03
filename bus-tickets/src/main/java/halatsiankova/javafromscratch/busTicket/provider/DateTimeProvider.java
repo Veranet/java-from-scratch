@@ -1,4 +1,4 @@
-package halatsiankova.javafromscratch.busTicket.provider;
+package halatsiankova.javafromscratch.busticket.provider;
 
 import java.time.LocalDate;
 

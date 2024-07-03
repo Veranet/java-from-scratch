@@ -1,9 +1,9 @@
-package halatsiankova.javafromscratch.busTicket.service;
+package halatsiankova.javafromscratch.busticket.service;
 
-import halatsiankova.javafromscratch.busTicket.enumerated.TicketType;
-import halatsiankova.javafromscratch.busTicket.model.BusTicket;
-import halatsiankova.javafromscratch.busTicket.repository.BusTicketRepository;
-import halatsiankova.javafromscratch.busTicket.util.GeneratorUUID;
+import halatsiankova.javafromscratch.busticket.enumerated.TicketType;
+import halatsiankova.javafromscratch.busticket.model.BusTicket;
+import halatsiankova.javafromscratch.busticket.repository.BusTicketRepository;
+import halatsiankova.javafromscratch.busticket.util.GeneratorUUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

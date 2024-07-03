@@ -1,4 +1,4 @@
-package halatsiankova.javafromscratch.busTicket.enumerated;
+package halatsiankova.javafromscratch.busticket.enumerated;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 
