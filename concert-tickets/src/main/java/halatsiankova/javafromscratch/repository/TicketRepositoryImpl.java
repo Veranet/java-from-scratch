@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.repository;
 
+import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
@@ -16,13 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class TicketRepositoryImpl implements TicketRepository {
-    Connection connection;
+    private final Connection connection;
 
-    public TicketRepositoryImpl() throws SQLException {
-        this.connection =
-                DriverManager.getConnection(
-                        "jdbc:postgresql://localhost:5432/my_ticket_service_db", "myuser", "mypassword"
-                );
+    public TicketRepositoryImpl(ConnectionDataBasePSQL con) throws SQLException {
+        this.connection = con.getConnection();
     }
 
     @Override

@@ -1,67 +1,27 @@
 package halatsiankova.javafromscratch.repository;
 
+import halatsiankova.javafromscratch.BaseRepositoryTest;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TicketRepositoryImplTest {
+class TicketRepositoryImplTest extends BaseRepositoryTest {
 
-    private static TicketRepositoryImpl ticketRepository;
-    private static Connection connection;
-
-    @BeforeAll
-    public static void setup() throws SQLException {
-        ticketRepository = new TicketRepositoryImpl();
-        connection =
-                DriverManager.
-                        getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "myuser", "mypassword");
-    }
+    private TicketRepositoryImpl ticketRepository;
 
     @BeforeEach
-    public void init() throws IOException, InterruptedException {
-        String sqlQuery = getResource();
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sqlQuery);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        Thread.sleep(3000);
+    void init() throws SQLException {
+        ticketRepository = new TicketRepositoryImpl(con);
     }
 
-    @AfterEach
-    public void clear() throws InterruptedException {
-
-        String sqlQuery;
-        try {
-            sqlQuery = new String(Files.readAllBytes(Paths.get("src/main/resources/clear.sql")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sqlQuery);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        Thread.sleep(5000);
-    }
     @Test
     void shouldSaveTicket() throws SQLException {
         LocalDateTime createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
@@ -131,14 +91,5 @@ class TicketRepositoryImplTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 6, 30, 10, 0, 0);
         Optional<Ticket> expected = Optional.of(new Ticket(1, 1, TicketType.YEAR, StadiumSector.A,localDateTime));
         assertEquals(expected, actual);
-    }
-
-    private static String getResource() throws IOException {
-        try {
-            return new String(Files.readAllBytes(Paths.get("src/main/resources/init.sql")));
-        } catch (IOException exception) {
-            System.out.println("\nCannot read file: " + exception.getMessage());
-            throw exception;
-        }
     }
 }

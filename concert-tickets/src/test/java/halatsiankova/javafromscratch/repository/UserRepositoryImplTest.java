@@ -1,5 +1,7 @@
 package halatsiankova.javafromscratch.repository;
 
+import halatsiankova.javafromscratch.BaseRepositoryTest;
+import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.enumerated.Role;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.BaseUser;
@@ -26,44 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class UserRepositoryImplTest {
-
-    private static UserRepositoryImpl userRepository;
-    private static Connection connection;
-
-    @BeforeAll
-    public static void setup() throws SQLException {
-        userRepository = new UserRepositoryImpl();
-        connection =
-                DriverManager.
-                        getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "myuser", "mypassword");
-    }
+class UserRepositoryImplTest extends BaseRepositoryTest {
+    private UserRepositoryImpl userRepository;
 
     @BeforeEach
-    public void init() throws IOException, InterruptedException {
-        String sqlQuery = getResource();
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sqlQuery);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        Thread.sleep(3000);
-    }
-
-    @AfterEach
-    public void clear() throws InterruptedException {
-        String sqlQuery;
-        try {
-            sqlQuery = new String(Files.readAllBytes(Paths.get("src/main/resources/clear.sql")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sqlQuery);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        Thread.sleep(5000);
+    void init() {
+        userRepository = new UserRepositoryImpl(con);
     }
 
     @Test
@@ -135,14 +105,5 @@ class UserRepositoryImplTest {
     @Test
     void shouldReturnOptionalEmptyWhenUserIdDoesNotExist() throws SQLException {
         assertEquals(Optional.empty(), userRepository.findRoleByUserId(30));
-    }
-
-    private static String getResource() throws IOException {
-        try {
-            return new String(Files.readAllBytes(Paths.get("src/main/resources/init.sql")));
-        } catch (IOException exception) {
-            System.out.println("\nCannot read file: " + exception.getMessage());
-            throw exception;
-        }
     }
 }

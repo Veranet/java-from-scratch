@@ -15,16 +15,8 @@ import static java.util.logging.Logger.getLogger;
 public class TicketService {
     private final TicketRepositoryImpl repository;
 
-    public TicketService() {
-        try {
-            repository = new TicketRepositoryImpl();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public TicketService(TicketRepositoryImpl repository) {
-        this.repository = repository;
+    public TicketService(TicketRepositoryImpl ticketRepository) {
+            this.repository = ticketRepository;
     }
 
     public void add(Ticket ticket) {

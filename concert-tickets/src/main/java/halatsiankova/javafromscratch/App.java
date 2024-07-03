@@ -1,13 +1,19 @@
 package halatsiankova.javafromscratch;
 
+import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
+import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
+import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
+import halatsiankova.javafromscratch.service.TicketService;
+import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,7 +27,7 @@ public class App {
 
     private static final Logger LOGGER = getLogger(App.class.getSimpleName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         // Lesson - 1
         Ticket ticket = new Ticket();
         Ticket ticketWithAllFields = new Ticket("12ae", "MAIN", 222, 1717499006,
@@ -48,6 +54,13 @@ public class App {
         admin.setId(2);
         user.printRole();
         admin.printRole();
+
+        // ApplicationConfig
+        ConnectionDataBasePSQL connectionDataBasePSQL = new ConnectionDataBasePSQL();
+        UserRepositoryImpl userRepository = new UserRepositoryImpl(connectionDataBasePSQL);
+        TicketRepositoryImpl ticketRepository = new TicketRepositoryImpl(connectionDataBasePSQL);
+        UserService userService = new UserService(userRepository);
+        TicketService ticketService = new TicketService(ticketRepository);
     }
 
     private static List<Ticket> createTenTickets() {

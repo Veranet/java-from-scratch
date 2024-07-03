@@ -1,15 +1,16 @@
 package halatsiankova.javafromscratch.repository;
 
+import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.enumerated.Role;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Client;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,12 +20,10 @@ import java.util.Optional;
 import static halatsiankova.javafromscratch.enumerated.Role.ADMIN;
 
 public class UserRepositoryImpl implements UserRepository {
-    Connection connection;
+    private final Connection connection;
 
-    public UserRepositoryImpl() throws SQLException {
-        this.connection =
-                DriverManager.getConnection(
-                        "jdbc:postgresql://localhost:5432/my_ticket_service_db", "myuser", "mypassword");
+    public UserRepositoryImpl(ConnectionDataBasePSQL con) {
+        this.connection = con.getConnection();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<BaseUser> findById(Integer id) throws SQLException {
         var FIND_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
         Optional<Role> role = findRoleByUserId(id);
-        if(role.isEmpty()) {
+        if (role.isEmpty()) {
             throw new IllegalArgumentException(String.format("User with ID=%d does not exist.", id));
         }
         Role userRole = role.get();
@@ -121,16 +120,42 @@ public class UserRepositoryImpl implements UserRepository {
         ) {
             connection.setAutoCommit(false);
 
-            deleteTickets.setInt(1, userId);
-            deleteTickets.executeUpdate();
+            Savepoint savepoint1 = connection.setSavepoint("Savepoint1");
 
-            deleteRole.setInt(1, userId);
-            deleteRole.executeUpdate();
+            try {
+                deleteTickets.setInt(1, userId);
+                deleteTickets.executeUpdate();
 
-            deleteUser.setInt(1, userId);
-            rowDeleted = deleteUser.executeUpdate() > 0;
+                Savepoint savepoint2 = connection.setSavepoint("Savepoint2");
 
-            connection.commit();
+                try {
+                    deleteRole.setInt(1, userId);
+                    deleteRole.executeUpdate();
+
+                    Savepoint savepoint3 = connection.setSavepoint("Savepoint3");
+
+                    try {
+                        deleteUser.setInt(1, userId);
+                        rowDeleted = deleteUser.executeUpdate() > 0;
+
+                        connection.commit();
+                    } catch (SQLException e) {
+                        connection.rollback(savepoint3);
+                        throw e;
+                    }
+                } catch (SQLException e) {
+                    connection.rollback(savepoint2);
+                    throw e;
+                }
+            } catch (SQLException e) {
+                connection.rollback(savepoint1);
+                throw e;
+            }
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(true);
         }
         return rowDeleted;
     }
@@ -138,19 +163,20 @@ public class UserRepositoryImpl implements UserRepository {
     public int findIdByUserNameAndCreationDate(String name, Timestamp date) throws SQLException {
         var FIND_ID_BY_NAME_AND_DATE_SQL = "SELECT id FROM users WHERE user_name = ? AND creation_date = ?";
         int userId = 0;
-        try(PreparedStatement preparedStatement = connection.prepareStatement(FIND_ID_BY_NAME_AND_DATE_SQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ID_BY_NAME_AND_DATE_SQL)) {
             preparedStatement.setString(1, name);
             preparedStatement.setTimestamp(2, date);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-              userId = rs.getInt("id");}
+                userId = rs.getInt("id");
+            }
         }
         return userId;
     }
 
     public void saveRole(int userId) throws SQLException {
         var SAVE_ROLE_SQL = "INSERT INTO user_role (user_id, role) values (?, ?)";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SAVE_ROLE_SQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SAVE_ROLE_SQL)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setObject(2, ADMIN, java.sql.Types.OTHER);
             preparedStatement.executeUpdate();
