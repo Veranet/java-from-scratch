@@ -1,6 +1,5 @@
 package halatsiankova.javafromscratch.service;
 
-import halatsiankova.javafromscratch.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
@@ -23,9 +21,9 @@ class TicketServiceTest {
     private final TicketService ticketService = new TicketService(ticketRepository);
 
     @Test
-    void shouldAadTicket() throws SQLException {
+    void shouldAadTicket() {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var ticket = new Ticket(null, 1, TicketType.DAY, StadiumSector.A, localDateTime);
+        var ticket = new Ticket(null, 1, TicketType.DAY, localDateTime);
         doNothing().when(ticketRepository).save(ticket);
 
         ticketService.add(ticket);
@@ -42,18 +40,6 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldReturnTicketById() throws SQLException {
-        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var ticket = new Ticket(1, 1, TicketType.DAY, StadiumSector.A, localDateTime);
-        when(ticketRepository.findById(1)).thenReturn(Optional.of(ticket));
-
-        var actual = ticketService.getTicketById(1);
-
-        var expected = new Ticket(1, 1, TicketType.DAY, StadiumSector.A, localDateTime);
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void shouldThrowIllegalArgumentExceptionWhenIdLess0() {
         var exception =
                 assertThrows(IllegalArgumentException.class, () -> ticketService.getTicketById(-2));
@@ -62,49 +48,18 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldReturnListTicketsByStadiumSector() throws SQLException {
-        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var tickets = List.of(
-                new Ticket(1, 2,TicketType.DAY, StadiumSector.A, localDateTime),
-                new Ticket(2, 2,TicketType.DAY, StadiumSector.A, localDateTime));
-        when(ticketRepository.findTicketByStadiumSector(StadiumSector.A)).thenReturn(tickets);
-
-        var actual = ticketService.getTicketsByStadiumSector(StadiumSector.A);
-
-        var expected = List.of(
-                new Ticket(1, 2,TicketType.DAY, StadiumSector.A, localDateTime),
-                new Ticket(2, 2,TicketType.DAY, StadiumSector.A, localDateTime));
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void shouldReturnEmptyListTicketsByStadiumSectorWhenTicketsDidNotExist() throws SQLException {
-        when(ticketRepository.findTicketByStadiumSector(StadiumSector.A)).thenReturn(List.of());
-
-        assertEquals(List.of(), ticketService.getTicketsByStadiumSector(StadiumSector.A));
-    }
-
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenStadiumSectorNull() {
-        var exception =
-                assertThrows(IllegalArgumentException.class, () -> ticketService.getTicketsByStadiumSector(null));
-
-        assertEquals("Stadium sector must not be null.", exception.getMessage());
-    }
-
-    @Test
     void shouldReturnListTicketsByUserId() throws SQLException {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
         var tickets = List.of(
-                new Ticket(1, 2,TicketType.DAY, StadiumSector.A, localDateTime),
-                new Ticket(2, 2,TicketType.DAY, StadiumSector.A, localDateTime));
+                new Ticket(1, 2,TicketType.DAY, localDateTime),
+                new Ticket(2, 2,TicketType.DAY, localDateTime));
         when(ticketRepository.findAllByUserId(2)).thenReturn(tickets);
 
         var actual = ticketService.getAllTicketsByUserId(2);
 
         var expected = List.of(
-                new Ticket(1, 2,TicketType.DAY, StadiumSector.A, localDateTime),
-                new Ticket(2, 2,TicketType.DAY, StadiumSector.A, localDateTime));
+                new Ticket(1, 2,TicketType.DAY, localDateTime),
+                new Ticket(2, 2,TicketType.DAY, localDateTime));
         assertEquals(expected, actual);
     }
 

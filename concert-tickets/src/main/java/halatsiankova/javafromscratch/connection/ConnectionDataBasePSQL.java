@@ -5,11 +5,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionDataBasePSQL {
-    private static Connection connection;
+    private static final String url = "jdbc:postgresql://localhost:5432/my_ticket_service_db";
+    private static final String user = "myuser";
+    private static final String password = "mypassword";
+    public Connection connection;
 
-    public ConnectionDataBasePSQL() throws SQLException {
-        this.connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/my_ticket_service_db", "myuser", "mypassword");
+    public ConnectionDataBasePSQL() {
+        try {
+            this.connection = DriverManager.getConnection(
+                    url, user, password);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public Connection getConnection() {

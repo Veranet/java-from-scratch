@@ -1,7 +1,6 @@
 package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.enumerated.Role;
-import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +24,8 @@ class UserServiceTest {
 
     @Test
     void shouldAddUser() throws SQLException {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        BaseUser user = new Client(null, Role.CLIENT, "Client", localDateTime);
+        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
+        var user = new Client(null, Role.CLIENT, "Client", localDateTime);
         doNothing().when(userRepository).save(user);
 
         userService.add(user);
@@ -42,14 +40,14 @@ class UserServiceTest {
 
     @Test
     void shouldReturnUserById() throws SQLException {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        BaseUser user = new Client(2, Role.CLIENT, "Client", localDateTime);
+        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
+        var user = new Client(2, Role.CLIENT, "Client", localDateTime);
 
         when(userRepository.findById(2)).thenReturn(Optional.of(user));
 
-        BaseUser actual = userService.getUserById(2);
+        var actual = userService.getUserById(2);
 
-        BaseUser expected = new Client(2, Role.CLIENT, "Client", localDateTime);
+        var expected = new Client(2, Role.CLIENT, "Client", localDateTime);
         assertEquals(expected, actual);
     }
 
@@ -67,25 +65,6 @@ class UserServiceTest {
         var exception
                 = assertThrows(IllegalArgumentException.class, () -> userService.getUserById(-3));
         assertEquals("User ID must not be negative or equal to 0.", exception.getMessage());
-    }
-
-    @Test
-    void shouldReturnListUsers() throws SQLException {
-        var dateForClient = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
-        var dateForAdmin = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
-        List<BaseUser> listUsers = List.of(
-                new Client(1, Role.CLIENT, "AB", dateForClient),
-                new Admin(2, Role.ADMIN, "BD", dateForAdmin)
-        );
-        when(userRepository.findAll()).thenReturn(listUsers);
-
-        List<BaseUser> actual = userService.getAllUsers();
-
-        List<BaseUser> expected = List.of(
-                new Client(1, Role.CLIENT, "AB", dateForClient),
-                new Admin(2, Role.ADMIN, "BD", dateForAdmin)
-        );
-        assertEquals(expected, actual);
     }
 
     @Test

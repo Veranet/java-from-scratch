@@ -3,23 +3,51 @@ package halatsiankova.javafromscratch.model;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Ticket implements Entity<Integer>, Printable, Sharable {
+@Entity
+@Table(name = "ticket")
+public class Ticket implements Printable, Sharable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+    @Transient
     private String ticketId;
+    @Transient
     private String concertHall;
+    @Transient
     private int eventCode;
+    @Transient
     private long eventTime;
+    @Transient
     private boolean isPromo;
+    @Transient
     private StadiumSector stadiumSector;
+    @Transient
     private double allowedBackpackWeight;
+    @Transient
     private BigDecimal price;
+    @Column(name = "creation_date")
     private LocalDateTime createdDateTime;
+    @Column(name = "user_id")
     private int userId;
+    @Enumerated
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "ticket_type")
     private TicketType type;
 
     public Ticket() {
@@ -45,16 +73,15 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         NullValidatorProcessor.checkNullFields(this);
     }
 
-    public Ticket(Integer id, int userId, TicketType type, StadiumSector stadiumSector, LocalDateTime createdDateTime) {
+    public Ticket(Integer id, int userId, TicketType type, LocalDateTime createdDateTime) {
         this.id = id;
         this.createdDateTime = createdDateTime;
         this.userId = userId;
         this.type = type;
-        this.stadiumSector = stadiumSector;
     }
 
     public Ticket(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
-                  StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price) {
+                  StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price, int userId) {
         this.ticketId = ticketId;
         this.concertHall = concertHall;
         this.eventCode = eventCode;
@@ -63,6 +90,7 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         this.stadiumSector = stadiumSector;
         this.allowedBackpackWeight = allowedBackpackWeight;
         this.price = price;
+        this.userId = userId;
     }
 
     public void setEventTime(long eventTime) {
@@ -113,12 +141,10 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
         this.createdDateTime = date;
     }
 
-    @Override
     public Integer getId() {
         return id;
     }
 
-    @Override
     public void setId(Integer id) {
         this.id = id;
     }
@@ -140,36 +166,16 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
     }
 
     @Override
-    public String share(String phone) {
-        return String.format("Ticket with ticketId = %s share by phone %s .%n.", ticketId, phone);
-    }
-
-    @Override
-    public String share(String phone, String email) {
-        return String
-                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n.", ticketId, phone, email);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Ticket ticket)) return false;
-        return eventCode == ticket.eventCode
-                && eventTime == ticket.eventTime
-                && isPromo == ticket.isPromo
-                && stadiumSector == ticket.stadiumSector
-                && Objects.equals(id, ticket.id)
-                && Double.compare(allowedBackpackWeight, ticket.allowedBackpackWeight) == 0
-                && Objects.equals(ticketId, ticket.ticketId)
-                && Objects.equals(concertHall, ticket.concertHall)
-                && Objects.equals(price, ticket.price)
-                && Objects.equals(createdDateTime, ticket.createdDateTime);
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return eventCode == ticket.eventCode && eventTime == ticket.eventTime && isPromo == ticket.isPromo && Double.compare(allowedBackpackWeight, ticket.allowedBackpackWeight) == 0 && userId == ticket.userId && Objects.equals(id, ticket.id) && Objects.equals(ticketId, ticket.ticketId) && Objects.equals(concertHall, ticket.concertHall) && stadiumSector == ticket.stadiumSector && Objects.equals(price, ticket.price) && Objects.equals(createdDateTime, ticket.createdDateTime) && type == ticket.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ticketId, concertHall, eventCode, eventTime, isPromo,
-                stadiumSector, allowedBackpackWeight, price, createdDateTime);
+        return Objects.hash(id, ticketId, concertHall, eventCode, eventTime, isPromo, stadiumSector, allowedBackpackWeight, price, createdDateTime, userId, type);
     }
 
     @Override
@@ -185,6 +191,19 @@ public class Ticket implements Entity<Integer>, Printable, Sharable {
                 ", allowedBackpackWeight=" + allowedBackpackWeight +
                 ", price=" + price +
                 ", createdDateTime=" + createdDateTime +
+                ", userId=" + userId +
+                ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public String share(String phone) {
+        return String.format("Ticket with ticketId = %s share by phone %s .%n.", ticketId, phone);
+    }
+
+    @Override
+    public String share(String phone, String email) {
+        return String
+                .format("Ticket with ticketId = %s share by phone = %s and by email = %s .%n.", ticketId, phone, email);
     }
 }
