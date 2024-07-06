@@ -3,12 +3,14 @@ package halatsiankova.javafromscratch.repository;
 import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.provider.SessionFactoryProvider;
+
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Repository
 public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRepository {
 
     public UserRepositoryImpl() {

@@ -2,10 +2,12 @@ package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Service
 public class UserService {
     private final UserRepositoryImpl userRepository;
 

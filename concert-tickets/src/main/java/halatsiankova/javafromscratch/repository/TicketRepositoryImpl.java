@@ -5,11 +5,13 @@ import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.provider.SessionFactoryProvider;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class TicketRepositoryImpl extends ConnectionDataBasePSQL implements TicketRepository {
 
     @Override

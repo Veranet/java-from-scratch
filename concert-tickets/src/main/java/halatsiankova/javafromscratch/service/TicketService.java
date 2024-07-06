@@ -3,11 +3,13 @@ package halatsiankova.javafromscratch.service;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TicketService {
     private final TicketRepositoryImpl repository;
 
