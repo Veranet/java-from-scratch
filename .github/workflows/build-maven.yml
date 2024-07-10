@@ -1,4 +1,4 @@
-name: Build with Gradle and run
+name: Build with Maven and run
 on: [push, workflow_dispatch]
 
 jobs:
