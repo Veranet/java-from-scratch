@@ -1,22 +1,37 @@
 package halatsiankova.javafromscratch.model;
 
 import halatsiankova.javafromscratch.enumerated.Role;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public abstract class BaseUser implements User {
+@Entity
+@Table(name = "users")
+public class BaseUser implements User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    private final Role role;
+    @Transient
+    private Role role;
+    @Column(name = "user_name")
     private String name;
+    @Column(name = "creation_date")
     private LocalDateTime createDate;
 
-    protected BaseUser(Integer id, Role role) {
+    public BaseUser(Integer id, Role role) {
         this.id = id;
         this.role = role;
     }
 
-    protected BaseUser(Role role) {
+    public BaseUser(Role role) {
         this.role = role;
     }
 
@@ -26,6 +41,14 @@ public abstract class BaseUser implements User {
         this.name = name;
         this.createDate = createDate;
     }
+
+    public BaseUser(Integer id, String name, LocalDateTime createDate) {
+        this.id = id;
+        this.name = name;
+        this.createDate = createDate;
+    }
+
+    public BaseUser() {}
 
     @Override
     public void printRole() {

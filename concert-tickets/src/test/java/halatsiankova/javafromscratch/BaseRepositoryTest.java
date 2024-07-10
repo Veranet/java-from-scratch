@@ -14,16 +14,12 @@ public class BaseRepositoryTest {
     public static final ConnectionDataBasePSQL con;
 
     static {
-        try {
             con = new ConnectionDataBasePSQL();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @BeforeEach
     void preparedDataBase() throws IOException {
-        String sqlQuery = getResource();
+        var sqlQuery = getResource();
         try (Statement statement = con.getConnection().createStatement()) {
             statement.execute(sqlQuery);
         } catch (SQLException e) {
@@ -32,7 +28,7 @@ public class BaseRepositoryTest {
     }
 
     @AfterEach
-    public void clear() throws InterruptedException {
+    public void clear() {
         String sqlQuery;
         try {
             sqlQuery = new String(Files.readAllBytes(Paths.get("src/main/resources/clear.sql")));
@@ -46,7 +42,7 @@ public class BaseRepositoryTest {
         }
     }
 
-    private static String getResource() throws IOException {
+    protected static String getResource() throws IOException {
         try {
             return new String(Files.readAllBytes(Paths.get("src/main/resources/init.sql")));
         } catch (IOException exception) {

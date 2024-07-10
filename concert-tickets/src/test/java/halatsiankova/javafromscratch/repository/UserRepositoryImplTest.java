@@ -1,109 +1,73 @@
 package halatsiankova.javafromscratch.repository;
 
-import halatsiankova.javafromscratch.BaseRepositoryTest;
-import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
-import halatsiankova.javafromscratch.enumerated.Role;
-import halatsiankova.javafromscratch.model.Admin;
+import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.BaseUser;
-import halatsiankova.javafromscratch.model.Client;
-import org.junit.jupiter.api.AfterEach;
+import halatsiankova.javafromscratch.model.Ticket;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class UserRepositoryImplTest extends BaseRepositoryTest {
-    private UserRepositoryImpl userRepository;
+class UserRepositoryImplTest {
+    private static UserRepositoryImpl userRepository;
+    private static TicketRepositoryImpl ticketRepository;
 
-    @BeforeEach
-    void init() {
-        userRepository = new UserRepositoryImpl(con);
+    @BeforeAll
+    static void setup() {
+        userRepository = new UserRepositoryImpl();
+        userRepository.connection = userRepository.getConnection();
+        ticketRepository = new TicketRepositoryImpl();
+        var createDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
+        var name = "Ivan";
+        BaseUser user = new BaseUser(null, name, createDate);
+
+        userRepository.save(user);
     }
 
     @Test
     void shouldSaveUser() throws SQLException {
-        LocalDateTime createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
-        String name = "Mark";
-        BaseUser user = new Admin(null, Role.ADMIN, name, createDate);
+        var createDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
+        var name = "Alex";
+        var user = new BaseUser(null, name, createDate);
 
         userRepository.save(user);
 
-        int id = userRepository.findIdByUserNameAndCreationDate(name, Timestamp.valueOf(createDate));
-
-        BaseUser expected = new Admin(id, Role.ADMIN, name, createDate);
-        assertEquals(Optional.of(expected), userRepository.findById(id));
+        var expected = new BaseUser(2, name, createDate);
+        assertEquals(Optional.of(expected), userRepository.findById(2));
     }
 
     @Test
     void shouldReturnOptionalUserByIdWhenUserExist() throws SQLException {
-        Optional<BaseUser> expected = Optional.of(new Admin(1, Role.ADMIN, "Ivan",
+        var expected = Optional.of(new BaseUser(2, "Alex",
                 LocalDateTime.of(2025, 1, 2, 0, 0, 0)));
-        assertEquals(expected, userRepository.findById(1));
+        assertEquals(expected, userRepository.findById(2));
     }
 
     @Test
-    void shouldReturnIllegalArgumentExceptionWhenUserDoesNotExist() {
-        assertThrows(IllegalArgumentException.class, () -> userRepository.findById(11));
+    void shouldReturnOptionalEmptyWhenUserDoesNotExist() throws SQLException {
+        assertEquals(Optional.empty(), userRepository.findById(11));
     }
 
     @Test
-    void shouldReturnRoleByUserId() throws SQLException {
-        assertEquals(Optional.of(Role.CLIENT), userRepository.findRoleByUserId(2));
-    }
-
-    @Test
-    void shouldReturnOptionalEmptyWhenRoleWithUserIdDoesNotExist() throws SQLException {
-        assertEquals(Optional.empty(), userRepository.findRoleByUserId(20));
-    }
-
-    @Test
-    void shouldReturnListUsersWhenUsersAreExist() throws SQLException {
-        List<BaseUser> expected = List.of(
-        new Admin(1, Role.ADMIN, "Ivan", LocalDateTime.of(2025, 1, 2, 0, 0)),
-        new Client(2, Role.CLIENT, "Alex", LocalDateTime.of(2024, 1, 2, 0, 0)),
-        new Client(3, Role.CLIENT, "Bob", LocalDateTime.of(2023, 1, 2, 0, 0)));
-        assertEquals(expected, userRepository.findAll());
-    }
-
-    @Test
-    void shouldReturnTrueWhenUserWasDeleteById() throws SQLException {
-        assertTrue(userRepository.deleteById(1));
-    }
-
-    @Test
-    void shouldReturnFalseWhenUserWasNotDeleteById() throws SQLException {
+    void shouldReturnFalseWhenUserWasNotDeleteById() {
         assertFalse(userRepository.deleteById(200));
     }
 
     @Test
-    void shouldReturnIdByUserNameAndCreationDate() throws SQLException {
-        LocalDateTime localDateTime = LocalDateTime.of(2023, 1, 2, 0, 0);
-        assertEquals(3, userRepository.findIdByUserNameAndCreationDate("Bob", Timestamp.valueOf(localDateTime)));
-    }
+    void shouldReturnTrueWhenUserWasDeletedById() {
+        var ticket = new Ticket(null, 1, TicketType.DAY, LocalDateTime.of(2025, 2, 1, 1, 1, 1));
+        var user = new BaseUser(null, "Alex", LocalDateTime.of(2025, 1, 2, 0, 0, 0));
 
-    @Test
-    void shouldReturnOptionalRoleWhenUserIdExist() throws SQLException {
-        assertEquals(Optional.of(Role.CLIENT), userRepository.findRoleByUserId(3));
-    }
+        ticketRepository.save(ticket);
+        userRepository.save(user);
 
-    @Test
-    void shouldReturnOptionalEmptyWhenUserIdDoesNotExist() throws SQLException {
-        assertEquals(Optional.empty(), userRepository.findRoleByUserId(30));
+        boolean firstDeletionResult = userRepository.deleteById(1);
+        assertTrue(firstDeletionResult);
     }
 }
