@@ -3,8 +3,8 @@ package halatsiankova.javafromscratch.repository;
 import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.provider.SessionFactoryProvider;
+
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.sql.SQLException;
 import java.util.Optional;

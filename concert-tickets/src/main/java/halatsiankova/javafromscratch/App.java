@@ -1,14 +1,21 @@
 package halatsiankova.javafromscratch;
 
+import halatsiankova.javafromscratch.config.ApplicationConfig;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
+import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
+import halatsiankova.javafromscratch.service.TicketService;
+import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +29,17 @@ public class App {
     private static final Logger LOGGER = getLogger(App.class.getSimpleName());
 
     public static void main(String[] args) {
+        // Lesson - 10
+        ApplicationContext applicationContext =
+                new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        UserService userService = applicationContext.getBean(UserService.class);
+        TicketService ticketService = applicationContext.getBean(TicketService.class);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+        userService.add(new BaseUser(null, "Brenda", localDateTime));
+        ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
+        LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
+        LOGGER.log(Level.INFO,userService.getUserById(1).toString());
+
         // Lesson - 1
         Ticket ticket = new Ticket();
         Ticket ticketWithAllFields = new Ticket("12ae", "MAIN", 222, 1717499006,
