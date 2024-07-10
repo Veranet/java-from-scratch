@@ -1,9 +1,9 @@
 package halatsiankova.javafromscratch.provider;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 public class DateTimeProvider {
-    public OffsetDateTime provideDateTime() {
-        return OffsetDateTime.now();
+    public Instant provideDateTime() {
+        return Instant.now();
     }
 }

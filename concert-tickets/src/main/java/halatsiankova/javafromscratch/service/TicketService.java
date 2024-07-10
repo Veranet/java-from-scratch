@@ -1,94 +1,82 @@
 package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
+import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.provider.DateTimeProvider;
-import halatsiankova.javafromscratch.repository.TicketRepository;
 import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
-import halatsiankova.javafromscratch.validator.CommunicationValidator;
-import halatsiankova.javafromscratch.validator.TicketValidator;
 
-import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.getLogger;
 
 public class TicketService {
-    private static final Logger LOGGER = getLogger(TicketService.class.getSimpleName());
+    private final TicketRepositoryImpl repository;
 
-    private final TicketValidator validator;
-    private final CommunicationValidator communicationValidator;
-    private final TicketRepository repository;
-    private final DateTimeProvider timeProvider;
-
-    public TicketService() {
-        communicationValidator = new CommunicationValidator();
-        validator = new TicketValidator();
-        repository = new TicketRepositoryImpl();
-        timeProvider = new DateTimeProvider();
+    public TicketService(TicketRepositoryImpl ticketRepository) {
+            this.repository = ticketRepository;
     }
 
-    public TicketService(TicketRepository repository) {
-        this.validator = new TicketValidator();
-        communicationValidator = new CommunicationValidator();
-        this.repository = repository;
-        this.timeProvider = new DateTimeProvider();
+    public void add(Ticket ticket) {
+        if(ticket == null) {
+            throw new IllegalArgumentException("Ticket must not be null.");
+        }
+        try {
+            repository.save(ticket);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Ticket create() {
-        Ticket emptyTicket = new Ticket();
-        LOGGER.log(Level.INFO, emptyTicket.toString());
-        return emptyTicket;
-    }
-
-    public Ticket create(String ticketId, String concertHall, int eventCode, long eventTime, boolean isPromo,
-                         StadiumSector stadiumSector, double allowedBackpackWeight, BigDecimal price) {
-        validator.validateTicketId(ticketId);
-        validator.validateConcertHall(concertHall);
-        validator.validateEventCode(eventCode);
-        validator.validateEventTime(eventTime);
-        validator.validateAllowedBackpackWeight(allowedBackpackWeight);
-        validator.validatePrice(price);
-        var createdDateTime = timeProvider.provideDateTime();
-        Ticket fullTicket = new Ticket(ticketId, concertHall, eventCode, eventTime, isPromo,
-                stadiumSector, allowedBackpackWeight, price, createdDateTime);
-        LOGGER.log(Level.INFO, fullTicket.toString());
-        return fullTicket;
-    }
-
-    public Ticket create(String concertHall, int eventCode, long time) {
-        validator.validateConcertHall(concertHall);
-        validator.validateEventCode(eventCode);
-        validator.validateEventTime(time);
-        Ticket limitedTicket = new Ticket(concertHall, eventCode, time);
-        LOGGER.log(Level.INFO, limitedTicket.toString());
-        return limitedTicket;
-    }
-
-    public void saveAll(List<Ticket> ticketsForSave) {
-        repository.saveAll(ticketsForSave);
-    }
-
-    public Ticket getById(String ticketId) {
-        return repository.findById(ticketId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(String.format("Cannot find ticket by ID = %s", ticketId)));
+    public Ticket getTicketById(int ticketId) {
+        checkTicketId(ticketId);
+        Optional<Ticket> ticket;
+        try {
+            ticket = repository.findById(ticketId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ticket.orElseThrow(
+                () -> new IllegalArgumentException(String.format("Ticket with ID = %d does not exist.", ticketId)));
     }
 
     public List<Ticket> getTicketsByStadiumSector(StadiumSector stadiumSector) {
-        return repository.findTicketByStadiumSector(stadiumSector);
+        if(stadiumSector == null) {
+            throw new IllegalArgumentException("Stadium sector must not be null.");
+        }
+        try {
+            return repository.findTicketByStadiumSector(stadiumSector);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void shareByPhone(String phone, Ticket ticket) {
-        communicationValidator.validatePhoneNumber(phone);
-        LOGGER.log(Level.INFO, ticket.share(phone));
+    public List<Ticket> getAllTicketsByUserId(int userId) {
+        UserService.checkUserId(userId);
+        try {
+            return repository.findAllByUserId(userId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void shareByPhoneAndEmail(String phone, String email, Ticket ticket) {
-        communicationValidator.validatePhoneNumber(phone);
-        communicationValidator.validateEmail(email);
-        LOGGER.log(Level.INFO, ticket.share(phone, email));
+    public void update(TicketType ticketType, int ticketId) {
+        if(ticketType == null) {
+            throw new IllegalArgumentException("Ticket type must not be null.");
+        }
+        checkTicketId(ticketId);
+        try {
+            repository.update(ticketType, ticketId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void checkTicketId(int ticketId) {
+        if(ticketId <= 0) {
+            throw new IllegalArgumentException("Ticket ID must not be negative or equal to 0.");
+        }
     }
 }

@@ -1,36 +1,11 @@
 package halatsiankova.javafromscratch.repository;
 
-import halatsiankova.javafromscratch.model.User;
+import halatsiankova.javafromscratch.model.BaseUser;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.sql.SQLException;
+import java.util.List;
 
-public class UserRepository implements Repository<User, Integer> {
-
-    private final Map<Integer, User> users;
-
-    public UserRepository() {
-        this.users = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public void save(User user) {
-        users.put(user.getId(), user);
-    }
-
-    @Override
-    public void saveAll(Collection<User> users) {
-        this.users.putAll(
-                users.stream()
-                        .collect(Collectors.toMap(User::getId, Function.identity())));
-    }
-
-    @Override
-    public Optional<User> findById(Integer id) {
-        return Optional.ofNullable(users.get(id));
-    }
+public interface UserRepository extends Repository<BaseUser, Integer> {
+    List<BaseUser> findAll() throws SQLException;
+    boolean deleteById(int userId) throws SQLException;
 }

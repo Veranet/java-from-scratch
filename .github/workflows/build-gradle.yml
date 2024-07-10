@@ -12,8 +12,11 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
+      - name: Run DataBase
+        run: docker compose up --detach
       - name: Build Project with Gradle
         run: gradle clean build
       - name: Run Application
         run: java -jar bus-tickets/build/libs/bus-tickets-1.0-SNAPSHOT.jar
+
 

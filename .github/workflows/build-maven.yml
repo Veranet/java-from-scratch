@@ -1,4 +1,4 @@
-name: Build with Maven and run
+name: Build with Gradle and run
 on: [push, workflow_dispatch]
 
 jobs:
@@ -12,8 +12,9 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
+      - name: Run DataBase
+        run: docker compose up --detach
       - name: Build Project with Maven
         run: mvn clean package
       - name: Run Application
-        run:  java -jar bus-tickets/target/bus-tickets-1.0-SNAPSHOT-jar-with-dependencies.jar
-
+        run: java -jar bus-tickets/target/bus-tickets-1.0-SNAPSHOT-jar-with-dependencies.jar
