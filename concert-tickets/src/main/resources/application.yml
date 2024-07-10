@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/my_ticket_service_db
+    username: myuser
+    password: mypassword
+
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
+    show-sql: true

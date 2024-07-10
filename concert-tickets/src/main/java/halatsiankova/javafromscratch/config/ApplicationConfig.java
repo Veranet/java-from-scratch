@@ -5,6 +5,7 @@ import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
 import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
     @Bean
     public ConnectionDataBasePSQL connectionDataBasePSQL() {
-        return new ConnectionDataBasePSQL();
-    };
+      return new ConnectionDataBasePSQL();
+    }
 
     @Bean
     public UserRepositoryImpl userRepositoryImpl() {

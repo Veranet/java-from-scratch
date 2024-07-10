@@ -33,34 +33,34 @@ public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRe
 
     @Override
     public boolean deleteById(int userId) {
-            boolean deleted = false;
+        boolean deleted = false;
 
-            try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
-                var transaction = session.beginTransaction();
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            var transaction = session.beginTransaction();
 
-                try {
-                    int ticketsDeleted = session.createQuery("DELETE FROM Ticket WHERE userId = :userId")
-                            .setParameter("userId", userId)
-                            .executeUpdate();
+            try {
+                int ticketsDeleted = session.createQuery("DELETE FROM Ticket WHERE userId = :userId")
+                        .setParameter("userId", userId)
+                        .executeUpdate();
 
-                    var hql = "DELETE FROM " + BaseUser.class.getCanonicalName() + " WHERE id = :userId";
-                    int userDeleted = session.createQuery(hql)
-                            .setParameter("userId", userId)
-                            .executeUpdate();
+                var hql = "DELETE FROM " + BaseUser.class.getCanonicalName() + " WHERE id = :userId";
+                int userDeleted = session.createQuery(hql)
+                        .setParameter("userId", userId)
+                        .executeUpdate();
 
-                    transaction.commit();
+                transaction.commit();
 
-                    deleted = (ticketsDeleted > 0) && (userDeleted > 0);
+                deleted = (ticketsDeleted > 0) && (userDeleted > 0);
 
-                } catch (Exception e) {
-                    if (transaction != null) {
-                        transaction.rollback();
-                    }
-                    e.printStackTrace();
-                }
             } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
                 e.printStackTrace();
             }
-            return deleted;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return deleted;
     }
+}

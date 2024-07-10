@@ -1,15 +1,19 @@
 package halatsiankova.javafromscratch.model;
 
 import halatsiankova.javafromscratch.enumerated.Role;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +29,8 @@ public class BaseUser implements User {
     private String name;
     @Column(name = "creation_date")
     private LocalDateTime createDate;
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Ticket> tickets;
 
     public BaseUser(Integer id, Role role) {
         this.id = id;
@@ -46,6 +52,13 @@ public class BaseUser implements User {
         this.id = id;
         this.name = name;
         this.createDate = createDate;
+    }
+
+    public BaseUser(Integer id, String name, LocalDateTime createDate, List<Ticket> tickets) {
+        this.id = id;
+        this.name = name;
+        this.createDate = createDate;
+        this.tickets = tickets;
     }
 
     public BaseUser() {}
@@ -81,6 +94,31 @@ public class BaseUser implements User {
         this.createDate = createDate;
     }
 
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseUser baseUser = (BaseUser) o;
+        return Objects.equals(id, baseUser.id)
+                && role == baseUser.role
+                && Objects.equals(name, baseUser.name)
+                && Objects.equals(createDate, baseUser.createDate)
+                && Objects.equals(tickets, baseUser.tickets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, role, name, createDate, tickets);
+    }
+
     @Override
     public String toString() {
         return "BaseUser{" +
@@ -88,22 +126,7 @@ public class BaseUser implements User {
                 ", role=" + role +
                 ", name='" + name + '\'' +
                 ", createDate=" + createDate +
+                ", tickets=" + tickets +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseUser user = (BaseUser) o;
-        return Objects.equals(id, user.id)
-                && role == user.role
-                && Objects.equals(name, user.name)
-                && Objects.equals(createDate, user.createDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, role, name, createDate);
     }
 }
