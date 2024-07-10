@@ -120,7 +120,7 @@ public class ArrayList<T> implements List<T> {
      */
     private void checkIndexForAdd(int index) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException(String.format("Index: $d, size: $d", index, size));
+            throw new IndexOutOfBoundsException(String.format("Index: %d, size: %d", index, size));
         }
     }
 
@@ -134,7 +134,7 @@ public class ArrayList<T> implements List<T> {
      */
     private void checkIndexInCollection(int index, int length) {
         if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException(String.format("Index: $d, size: $d", index, length));
+            throw new IndexOutOfBoundsException(String.format("Index: %d, size: %d", index, length));
         }
     }
 
