@@ -43,8 +43,8 @@ public class Ticket implements Printable, Sharable {
     private BigDecimal price;
     @Column(name = "creation_date")
     private LocalDateTime createdDateTime;
-   @Column(name = "user_id")
-   private int userId;
+    @Column(name = "user_id")
+    private int userId;
     @Enumerated
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "ticket_type")

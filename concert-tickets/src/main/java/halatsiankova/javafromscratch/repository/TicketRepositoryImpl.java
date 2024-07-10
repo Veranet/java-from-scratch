@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public class TicketRepositoryImpl extends ConnectionDataBasePSQL implements TicketRepository {
 
+    public TicketRepositoryImpl() {}
     @Override
     public void save(Ticket ticket) {
         var session = SessionFactoryProvider.getSessionFactory().openSession();

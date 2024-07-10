@@ -1,9 +1,11 @@
 package halatsiankova.javafromscratch.model;
 
 import halatsiankova.javafromscratch.enumerated.Role;
+import halatsiankova.javafromscratch.enumerated.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,10 +13,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +35,11 @@ public class BaseUser implements User {
     @Column(name = "creation_date")
     private LocalDateTime createDate;
     @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> tickets;
+    private Set<Ticket> tickets;
+    @Column(name = "status")
+    @Enumerated
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private Status status;
 
     public BaseUser(Integer id, Role role) {
         this.id = id;
@@ -54,10 +63,11 @@ public class BaseUser implements User {
         this.createDate = createDate;
     }
 
-    public BaseUser(Integer id, String name, LocalDateTime createDate, List<Ticket> tickets) {
+    public BaseUser(Integer id, String name, LocalDateTime createDate, Status status, Set<Ticket> tickets) {
         this.id = id;
         this.name = name;
         this.createDate = createDate;
+        this.status = status;
         this.tickets = tickets;
     }
 
@@ -94,12 +104,20 @@ public class BaseUser implements User {
         this.createDate = createDate;
     }
 
-    public List<Ticket> getTickets() {
+    public Set<Ticket> getTickets() {
         return tickets;
     }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
+    public void setTickets(Collection<Ticket> tickets) {
+        this.tickets.addAll(tickets);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -111,12 +129,13 @@ public class BaseUser implements User {
                 && role == baseUser.role
                 && Objects.equals(name, baseUser.name)
                 && Objects.equals(createDate, baseUser.createDate)
-                && Objects.equals(tickets, baseUser.tickets);
+                && Objects.equals(tickets, baseUser.tickets)
+                && status == baseUser.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, role, name, createDate, tickets);
+        return Objects.hash(id, role, name, createDate, tickets, status);
     }
 
     @Override
@@ -127,6 +146,7 @@ public class BaseUser implements User {
                 ", name='" + name + '\'' +
                 ", createDate=" + createDate +
                 ", tickets=" + tickets +
+                ", status=" + status +
                 '}';
     }
 }

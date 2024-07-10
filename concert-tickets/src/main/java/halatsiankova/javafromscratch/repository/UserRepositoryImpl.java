@@ -1,10 +1,13 @@
 package halatsiankova.javafromscratch.repository;
 
 import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
+import halatsiankova.javafromscratch.enumerated.Status;
 import halatsiankova.javafromscratch.model.BaseUser;
+import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.provider.SessionFactoryProvider;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -62,5 +65,25 @@ public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRe
             e.printStackTrace();
         }
         return deleted;
+    }
+
+    public void updateUserAndSaveTicket(BaseUser user, Ticket ticket) throws SQLException {
+        Transaction transaction = null;
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            if (user.getStatus() == Status.ACTIVATED) {
+                session.merge(user);
+                ticket.setUserId(user.getId());
+                session.persist(ticket);
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 }

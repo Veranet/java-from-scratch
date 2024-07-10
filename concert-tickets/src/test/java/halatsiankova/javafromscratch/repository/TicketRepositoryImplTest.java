@@ -32,8 +32,8 @@ class TicketRepositoryImplTest extends BaseRepositoryTest {
 
         ticketRepository.save(ticket);
 
-        var expected = Optional.of(new Ticket(3, 1, TicketType.DAY, createDate));
-        assertEquals(expected, ticketRepository.findById(3));
+        var expected = Optional.of(new Ticket(2, 1, TicketType.DAY, createDate));
+        assertEquals(expected, ticketRepository.findById(2));
     }
 
     @Test
