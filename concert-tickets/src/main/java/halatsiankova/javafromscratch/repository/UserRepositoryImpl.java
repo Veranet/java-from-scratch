@@ -5,12 +5,10 @@ import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.provider.SessionFactoryProvider;
 
 import org.hibernate.Session;
-import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
-@Repository
 public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRepository {
 
     public UserRepositoryImpl() {
