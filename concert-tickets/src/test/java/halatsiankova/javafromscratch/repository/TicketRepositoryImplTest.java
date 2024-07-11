@@ -18,7 +18,7 @@ class TicketRepositoryImplTest extends BaseRepositoryTest {
 
     @BeforeEach
     void init() {
-        ticketRepository = new TicketRepositoryImpl();
+        ticketRepository = new TicketRepositoryImpl(con);
         var createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
         var ticketWithUserId1 = new Ticket(null, 1, TicketType.DAY, createDate);
         ticketRepository.save(ticketWithUserId1);

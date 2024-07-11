@@ -7,7 +7,6 @@ import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.repository.UserRepository;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
@@ -23,9 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
-//import static halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL.password;
-//import static halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL.url;
-//import static halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL.user;
 import static halatsiankova.javafromscratch.enumerated.StadiumSector.A;
 import static java.util.logging.Logger.getLogger;
 
@@ -41,36 +37,36 @@ public class App {
         TicketService ticketService = applicationContext.getBean(TicketService.class);
         LocalDateTime localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
         userService.add(new BaseUser(null, "Brenda", localDateTime));
-        //ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
+        ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
         LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
-        LOGGER.log(Level.INFO,userService.getUserById(1).toString());
+        LOGGER.log(Level.INFO, userService.getUserById(1).toString());
 
         // Lesson - 1
-//        Ticket ticket = new Ticket();
-//        Ticket ticketWithAllFields = new Ticket("12ae", "MAIN", 222, 1717499006,
-//                true, A, 15.86, BigDecimal.valueOf(100.58), 1);
-//        Ticket ticketWithLimitedFields = new Ticket("SMALL", 135, 1717499006);
-//
-//        // Lesson - 2
-//        List<Ticket> ticketsToLecture3 = createTenTickets();
-//
-//        // Lesson - 4
-//        // task 4.1
-//        Ticket ticket1 = ticketsToLecture3.get(1);
-//        ticket.setId(15);
-//        LOGGER.log(Level.INFO, ticket.getId().toString());
-//        // task 4.2
-//        LOGGER.log(Level.INFO,ticket.print());
-//        // task 4.4
-//        LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890"));
-//        LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890", "email@dom.com"));
-//        // task 4.5
-//        BaseUser user = new Client();
-//        user.setId(1);
-//        Admin admin = new Admin();
-//        admin.setId(2);
-//        user.printRole();
-//        admin.printRole();
+        Ticket ticket = new Ticket();
+        Ticket ticketWithAllFields = new Ticket("12ae", "MAIN", 222, 1717499006,
+                true, A, 15.86, BigDecimal.valueOf(100.58), 1);
+        Ticket ticketWithLimitedFields = new Ticket("SMALL", 135, 1717499006);
+
+        // Lesson - 2
+        List<Ticket> ticketsToLecture3 = createTenTickets();
+
+        // Lesson - 4
+        // task 4.1
+        Ticket ticket1 = ticketsToLecture3.get(1);
+        ticket.setId(15);
+        LOGGER.log(Level.INFO, ticket.getId().toString());
+        // task 4.2
+        LOGGER.log(Level.INFO, ticket.print());
+        // task 4.4
+        LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890"));
+        LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890", "email@dom.com"));
+        // task 4.5
+        BaseUser user = new Client();
+        user.setId(1);
+        Admin admin = new Admin();
+        admin.setId(2);
+        user.printRole();
+        admin.printRole();
     }
 
     private static List<Ticket> createTenTickets() {

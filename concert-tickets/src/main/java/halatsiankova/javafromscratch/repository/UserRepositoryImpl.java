@@ -12,9 +12,12 @@ import org.hibernate.Transaction;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRepository {
+public class UserRepositoryImpl  implements UserRepository {
 
-    public UserRepositoryImpl() {
+    private final ConnectionDataBasePSQL connection;
+
+    public UserRepositoryImpl(ConnectionDataBasePSQL connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -67,7 +70,7 @@ public class UserRepositoryImpl extends ConnectionDataBasePSQL implements UserRe
         return deleted;
     }
 
-    public void updateUserAndSaveTicket(BaseUser user, Ticket ticket) throws SQLException {
+    public void updateUserAndSaveTicket(BaseUser user, Ticket ticket) {
         Transaction transaction = null;
         try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();

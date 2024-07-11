@@ -10,9 +10,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class TicketRepositoryImpl extends ConnectionDataBasePSQL implements TicketRepository {
+public class TicketRepositoryImpl implements TicketRepository {
 
-    public TicketRepositoryImpl() {}
+   private final ConnectionDataBasePSQL connection;
+
+    public TicketRepositoryImpl(ConnectionDataBasePSQL connection) {
+        this.connection = connection;
+    }
+
+
     @Override
     public void save(Ticket ticket) {
         var session = SessionFactoryProvider.getSessionFactory().openSession();

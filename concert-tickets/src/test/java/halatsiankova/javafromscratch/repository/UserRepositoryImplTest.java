@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserRepositoryImplTest extends BaseRepositoryTest {
-    private static final UserRepositoryImpl userRepository = new UserRepositoryImpl();
+
+    private static final UserRepositoryImpl userRepository = new UserRepositoryImpl(con);
 
     @BeforeAll
     static void setup() {

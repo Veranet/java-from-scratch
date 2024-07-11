@@ -5,12 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionDataBasePSQL {
-    private static final String url = "jdbc:postgresql://localhost:5432/my_ticket_service_db";
-    private static final String user = "myuser";
-    private static final String password = "mypassword";
+
     public Connection connection;
 
-    public ConnectionDataBasePSQL() {
+    public ConnectionDataBasePSQL(String url, String user, String password) {
         try {
             this.connection = DriverManager.getConnection(
                     url, user, password);

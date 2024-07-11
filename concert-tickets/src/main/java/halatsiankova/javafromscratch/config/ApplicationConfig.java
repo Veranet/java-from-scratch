@@ -6,33 +6,41 @@ import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource("classpath:application.yml")
 public class ApplicationConfig {
+
     @Bean
-    public ConnectionDataBasePSQL connectionDataBasePSQL() {
-      return new ConnectionDataBasePSQL();
+    public ConnectionDataBasePSQL connectionDataBasePSQL(
+            @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.username}") String user,
+            @Value("${spring.datasource.password}") String password) {
+
+        return new ConnectionDataBasePSQL(url, user, password);
     }
 
     @Bean
-    public UserRepositoryImpl userRepositoryImpl() {
-        return new UserRepositoryImpl();
+    public UserRepositoryImpl userRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
+        return new UserRepositoryImpl(connectionDataBasePSQL);
     }
 
     @Bean
-    public TicketRepositoryImpl ticketRepositoryImpl() {
-        return new TicketRepositoryImpl();
+    public TicketRepositoryImpl ticketRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
+        return new TicketRepositoryImpl(connectionDataBasePSQL);
     }
 
     @Bean
-    public TicketService ticketService() {
-        return new TicketService(ticketRepositoryImpl());
+    public TicketService ticketService(TicketRepositoryImpl ticketRepositoryImpl) {
+        return new TicketService(ticketRepositoryImpl);
     }
 
     @Bean
-    public UserService userService() {
-        return new UserService(userRepositoryImpl());
+    public UserService userService(UserRepositoryImpl userRepositoryImpl) {
+        return new UserService(userRepositoryImpl);
     }
 }

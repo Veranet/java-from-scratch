@@ -13,7 +13,8 @@ public class BaseRepositoryTest {
     public static final ConnectionDataBasePSQL con;
 
     static {
-            con = new ConnectionDataBasePSQL();
+            con = new ConnectionDataBasePSQL("jdbc:postgresql://localhost:5432/my_ticket_service_db",
+                    "myuser", "mypassword");
     }
 
     @AfterAll
