@@ -20,7 +20,6 @@ public class ApplicationConfig {
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String user,
             @Value("${spring.datasource.password}") String password) {
-
         return new ConnectionDataBasePSQL(url, user, password);
     }
 
@@ -40,7 +39,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UserService userService(UserRepositoryImpl userRepositoryImpl) {
-        return new UserService(userRepositoryImpl);
+    public UserService userService(UserRepositoryImpl userRepositoryImpl,
+                                   @Value("${service.update-enabled}") boolean updateEnabled) {
+        return new UserService(userRepositoryImpl, updateEnabled);
     }
 }

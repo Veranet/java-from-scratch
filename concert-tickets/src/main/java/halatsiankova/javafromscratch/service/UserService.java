@@ -12,9 +12,11 @@ import java.util.Optional;
 public class UserService {
     private final UserRepositoryImpl userRepository;
 
+    private final boolean updateEnabled;
 
-    public UserService(UserRepositoryImpl userRepository) {
+    public UserService(UserRepositoryImpl userRepository, boolean updateEnabled) {
         this.userRepository = userRepository;
+        this.updateEnabled = updateEnabled;
     }
 
     public void add(BaseUser user) {
@@ -51,13 +53,18 @@ public class UserService {
     }
 
     /**
-     * Update User and create Ticket if status ACTIVATED.
+     * Update the user and create a ticket if the status is ACTIVATE and the update operation is enabled.
+     *
      * @param user user to be updated.
      * @param ticket ticket to be created.
-     * @throws IllegalArgumentException if user or ticket is null.
+     * @throws IllegalArgumentException if the user or ticket is null.
+     * @throws UnsupportedOperationException if the update operation is disabled.
      */
     @Transactional
-    public void updateUserAndSaveTickets(BaseUser user, Ticket ticket) throws SQLException {
+    public void updateUserAndSaveTickets(BaseUser user, Ticket ticket) {
+        if(!updateEnabled) {
+            throw new UnsupportedOperationException("Update not supported.");
+        }
         if (user == null) {
             throw new IllegalArgumentException("User must not be null.");
         }
@@ -73,5 +80,4 @@ public class UserService {
             throw new IllegalArgumentException("User ID must not be negative or equal to 0.");
         }
     }
-
 }

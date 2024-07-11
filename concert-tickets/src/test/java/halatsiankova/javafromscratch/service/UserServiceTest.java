@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
     private final UserRepositoryImpl userRepository = mock(UserRepositoryImpl.class);
 
-    private final UserService userService = new UserService(userRepository);
+    private UserService userService = new UserService(userRepository, true);
 
     @Test
     void shouldAddUser() {
@@ -126,5 +126,21 @@ class UserServiceTest {
         var exception = assertThrows(IllegalArgumentException.class,
                 () -> userService.updateUserAndSaveTickets(user, null));
         assertEquals("Ticket must not be null.", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowUnsupportedOperationExceptionWhenUpdateDisabled() {
+        userService = new UserService(userRepository, false);
+
+        Set<Ticket> ticketList = new HashSet<>();
+        var ticket = new Ticket(null, 1, TicketType.DAY,
+                LocalDateTime.of(2024, 2, 1, 1, 1, 1));
+        ticketList.add(ticket);
+        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
+        var user = new BaseUser(2, "Client", localDateTime, Status.ACTIVATED, ticketList);
+
+        var exception = assertThrows(UnsupportedOperationException.class,
+                () -> userService.updateUserAndSaveTickets(user, ticket));
+        assertEquals("Update not supported.", exception.getMessage());
     }
 }
