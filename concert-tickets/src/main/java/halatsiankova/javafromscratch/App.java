@@ -11,6 +11,7 @@ import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
 
+import halatsiankova.javafromscratch.util.TicketsLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -40,6 +41,10 @@ public class App {
         ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
         LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
         LOGGER.log(Level.INFO, userService.getUserById(1).toString());
+
+        // Lesson - 11
+        TicketsLoader ticketsLoader = applicationContext.getBean(TicketsLoader.class);
+        ticketsLoader.load().forEach(ticket -> LOGGER.log(Level.INFO, ticket.toString()));
 
         // Lesson - 1
         Ticket ticket = new Ticket();

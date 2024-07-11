@@ -12,10 +12,6 @@
     <artifactId>collections</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <junit.version>5.10.2</junit.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
