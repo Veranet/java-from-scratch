@@ -7,11 +7,13 @@ import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.service.TicketService;
-import halatsiankova.javafromscratch.service.UserService;
+//import halatsiankova.javafromscratch.service.TicketService;
+//import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
 
 import halatsiankova.javafromscratch.util.TicketsLoader;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -26,21 +28,23 @@ import java.util.stream.IntStream;
 import static halatsiankova.javafromscratch.enumerated.StadiumSector.A;
 import static java.util.logging.Logger.getLogger;
 
+@SpringBootApplication
 public class App {
 
     private static final Logger LOGGER = getLogger(App.class.getSimpleName());
 
     public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
         // Lesson - 10
         ApplicationContext applicationContext =
                 new AnnotationConfigApplicationContext(ApplicationConfig.class);
-        UserService userService = applicationContext.getBean(UserService.class);
-        TicketService ticketService = applicationContext.getBean(TicketService.class);
+        //UserService userService = applicationContext.getBean(UserService.class);
+        //TicketService ticketService = applicationContext.getBean(TicketService.class);
         LocalDateTime localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
-        userService.add(new BaseUser(null, "Brenda", localDateTime));
-        ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
-        LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
-        LOGGER.log(Level.INFO, userService.getUserById(1).toString());
+        ////userService.add(new BaseUser(null, "Brenda", localDateTime));
+        //ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
+        //LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
+       // LOGGER.log(Level.INFO, userService.getUserById(1).toString());
 
         // Lesson - 11
         TicketsLoader ticketsLoader = applicationContext.getBean(TicketsLoader.class);

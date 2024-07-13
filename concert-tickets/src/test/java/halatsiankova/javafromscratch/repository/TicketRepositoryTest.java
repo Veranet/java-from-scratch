@@ -1,10 +1,12 @@
 package halatsiankova.javafromscratch.repository;
 
-import halatsiankova.javafromscratch.BaseRepositoryTest;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,33 +14,28 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TicketRepositoryImplTest extends BaseRepositoryTest {
+@SpringBootTest
+@Sql("/testDb.sql")
+class TicketRepositoryTest {
 
-    private TicketRepositoryImpl ticketRepository;
-
-    @BeforeEach
-    void init() {
-        ticketRepository = new TicketRepositoryImpl(con);
-        var createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
-        var ticketWithUserId1 = new Ticket(null, 1, TicketType.DAY, createDate);
-        ticketRepository.save(ticketWithUserId1);
-    }
+    @Autowired
+    private TicketRepository ticketRepository;
 
 
     @Test
-    void shouldSaveTicket() throws SQLException {
+    void shouldSaveTicket() {
         var createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
         var ticket = new Ticket(null, 1, TicketType.DAY, createDate);
 
         ticketRepository.save(ticket);
 
-        var expected = Optional.of(new Ticket(2, 1, TicketType.DAY, createDate));
-        assertEquals(expected, ticketRepository.findById(2));
+        var expected = Optional.of(new Ticket(5, 1, TicketType.DAY, createDate));
+        assertEquals(expected, ticketRepository.findById(5));
     }
 
     @Test
-    void shouldReturnOptionalTicketByIdWhenTicketExist() throws SQLException {
-        var localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+    void shouldReturnOptionalTicketByIdWhenTicketExist() {
+        var localDateTime = LocalDateTime.of(2024, 6, 30, 10, 0, 0);
 
         var expected = Optional.of(new Ticket(1, 1, TicketType.DAY, localDateTime));
 
@@ -46,17 +43,17 @@ class TicketRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void shouldReturnOptionalEmptyWhenTicketDoesNotExist() throws SQLException {
+    void shouldReturnOptionalEmptyWhenTicketDoesNotExist() {
         assertEquals(Optional.empty(), ticketRepository.findById(100));
     }
 
     @Test
     void shouldReturnListTicketsByUserId() throws SQLException {
-        var localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+        var localDateTime = LocalDateTime.of(2024, 6, 30, 10, 0, 0);
 
         var expected = List.of(
                 new Ticket(1, 1, TicketType.DAY, localDateTime),
-                new Ticket(2, 1, TicketType.DAY, localDateTime));
+                new Ticket(4, 1, TicketType.MONTH, localDateTime));
 
         assertEquals(expected, ticketRepository.findAllByUserId(1));
     }
@@ -67,12 +64,12 @@ class TicketRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    void shouldUpdateTicket() throws SQLException {
-        ticketRepository.update(TicketType.YEAR, 1);
+    void shouldUpdateTicket() {
+        ticketRepository.updateTicketTypeById(1, TicketType.YEAR.name());
 
         var actual = ticketRepository.findById(1);
 
-        var localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+        var localDateTime = LocalDateTime.of(2024, 6, 30, 10, 0, 0);
         var expected = Optional.of(new Ticket(1, 1, TicketType.YEAR, localDateTime));
         assertEquals(expected, actual);
     }

@@ -2,7 +2,7 @@ package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
+import halatsiankova.javafromscratch.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -18,14 +19,14 @@ import static org.mockito.Mockito.when;
 
 class TicketServiceTest {
 
-    private final TicketRepositoryImpl ticketRepository = mock(TicketRepositoryImpl.class);
+    private final TicketRepository ticketRepository = mock(TicketRepository.class);
     private final TicketService ticketService = new TicketService(ticketRepository);
 
     @Test
     void shouldAadTicket() {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
         var ticket = new Ticket(null, 1, TicketType.DAY, localDateTime);
-        doNothing().when(ticketRepository).save(ticket);
+        when(ticketRepository.save(ticket)).thenReturn(any());
 
         ticketService.add(ticket);
 
@@ -81,11 +82,11 @@ class TicketServiceTest {
 
     @Test
     void shouldUpdateTicket() throws SQLException {
-        doNothing().when(ticketRepository).update(TicketType.YEAR, 2);
+        doNothing().when(ticketRepository).updateTicketTypeById(2, TicketType.YEAR.name());
 
         ticketService.update(TicketType.YEAR, 2);
 
-        verify(ticketRepository).update(TicketType.YEAR, 2);
+        verify(ticketRepository).updateTicketTypeById(2, TicketType.YEAR.name());
     }
 
     @Test
