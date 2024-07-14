@@ -5,8 +5,6 @@ import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
-//import halatsiankova.javafromscratch.service.TicketService;
-//import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.repository.TicketRepository;
 import halatsiankova.javafromscratch.repository.UserRepository;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
@@ -36,14 +34,7 @@ public class App {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(App.class, args);
-        // Lesson - 12
-
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        // Lesson - 11
+        // Lesson - 11, 12
         DataLoader dataLoader = applicationContext.getBean(DataLoader.class);
 
         var initialUsers = dataLoader.load(PATH_USERS, BaseUser.class);

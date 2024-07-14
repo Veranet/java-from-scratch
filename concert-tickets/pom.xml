@@ -16,6 +16,7 @@
         <spring.boot.version>3.3.0</spring.boot.version>
         <jackson.databind>2.17.1</jackson.databind>
         <flyway.version>10.15.0</flyway.version>
+        <spring.security.test.version>6.3.1</spring.security.test.version>
     </properties>
 
     <parent>
@@ -49,6 +50,17 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring.security.test.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

@@ -17,6 +17,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value =
-    "UPDATE ticket SET ticket_type = CAST(?2 AS ticket_type) WHERE id = ?1 ;")
+            "UPDATE ticket SET ticket_type = CAST(?2 AS ticket_type) WHERE id = ?1 ;")
     void updateTicketTypeById(int ticketId, String ticketType);
 }

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
-    private static final Logger LOGGER = Logger.getLogger(TicketController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TicketController.class.getSimpleName());
     private final ConversionService conversionService;
     private final TicketService ticketService;
 
