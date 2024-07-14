@@ -8,7 +8,6 @@ import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 class UserServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
 

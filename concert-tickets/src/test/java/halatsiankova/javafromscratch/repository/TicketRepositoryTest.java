@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +47,7 @@ class TicketRepositoryTest {
     }
 
     @Test
-    void shouldReturnListTicketsByUserId() throws SQLException {
+    void shouldReturnListTicketsByUserId() {
         var localDateTime = LocalDateTime.of(2024, 6, 30, 10, 0, 0);
 
         var expected = List.of(
@@ -59,7 +58,7 @@ class TicketRepositoryTest {
     }
 
     @Test
-    void shouldReturnEmptyListWhenTicketsByUserIdDidNotExist() throws SQLException {
+    void shouldReturnEmptyListWhenTicketsByUserIdDidNotExist() {
         assertEquals(List.of(), ticketRepository.findAllByUserId(5));
     }
 

@@ -5,7 +5,6 @@ import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,7 +49,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldReturnListTicketsByUserId() throws SQLException {
+    void shouldReturnListTicketsByUserId() {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
         var tickets = List.of(
                 new Ticket(1, 2,TicketType.DAY, localDateTime),
@@ -66,7 +65,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldReturnEmptyListTicketsByUserIdWhenTicketsDidNotExist() throws SQLException {
+    void shouldReturnEmptyListTicketsByUserIdWhenTicketsDidNotExist() {
         when(ticketRepository.findAllByUserId(1)).thenReturn(List.of());
 
         assertEquals(List.of(), ticketService.getAllTicketsByUserId(1));
@@ -81,7 +80,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldUpdateTicket() throws SQLException {
+    void shouldUpdateTicket() {
         doNothing().when(ticketRepository).updateTicketTypeById(2, TicketType.YEAR.name());
 
         ticketService.update(TicketType.YEAR, 2);

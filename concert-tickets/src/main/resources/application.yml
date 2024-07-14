@@ -1,3 +1,7 @@
+conditional:
+  string: "thisIsMyFirstConditionalBean"
+  string-enabled: false
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver

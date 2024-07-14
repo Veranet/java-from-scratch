@@ -11,7 +11,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -21,6 +20,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -114,7 +114,14 @@ public class BaseUser implements User {
     }
 
     public void setTickets(Collection<Ticket> tickets) {
-        this.tickets.addAll(tickets);
+        if (tickets == null) {
+            return;
+        }
+        if (this.tickets != null) {
+            this.tickets.addAll(tickets);
+        } else {
+            this.tickets = new HashSet<>(tickets);
+        }
     }
 
     public Status getStatus() {

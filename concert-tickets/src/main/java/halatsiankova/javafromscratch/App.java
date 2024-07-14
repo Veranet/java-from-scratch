@@ -1,25 +1,23 @@
 package halatsiankova.javafromscratch;
 
-import halatsiankova.javafromscratch.config.ApplicationConfig;
 import halatsiankova.javafromscratch.enumerated.StadiumSector;
-import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Admin;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
 //import halatsiankova.javafromscratch.service.TicketService;
 //import halatsiankova.javafromscratch.service.UserService;
+import halatsiankova.javafromscratch.repository.TicketRepository;
+import halatsiankova.javafromscratch.repository.UserRepository;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
 
-import halatsiankova.javafromscratch.util.TicketsLoader;
+import halatsiankova.javafromscratch.util.DataLoader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,22 +31,33 @@ public class App {
 
     private static final Logger LOGGER = getLogger(App.class.getSimpleName());
 
-    public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
-        // Lesson - 10
-        ApplicationContext applicationContext =
-                new AnnotationConfigApplicationContext(ApplicationConfig.class);
-        //UserService userService = applicationContext.getBean(UserService.class);
-        //TicketService ticketService = applicationContext.getBean(TicketService.class);
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
-        ////userService.add(new BaseUser(null, "Brenda", localDateTime));
-        //ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
-        //LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
-       // LOGGER.log(Level.INFO, userService.getUserById(1).toString());
+    private final static String PATH_TICKETS = "classpath:tickets.json";
+    private final static String PATH_USERS = "classpath:users.json";
 
+    public static void main(String[] args) {
+        ApplicationContext applicationContext = SpringApplication.run(App.class, args);
+        // Lesson - 12
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         // Lesson - 11
-        TicketsLoader ticketsLoader = applicationContext.getBean(TicketsLoader.class);
-        ticketsLoader.load().forEach(ticket -> LOGGER.log(Level.INFO, ticket.toString()));
+        DataLoader dataLoader = applicationContext.getBean(DataLoader.class);
+
+        var initialUsers = dataLoader.load(PATH_USERS, BaseUser.class);
+        initialUsers.forEach(user -> LOGGER.log(Level.INFO, user.toString()));
+        var userRepository = applicationContext.getBean(UserRepository.class);
+        var savedUsers = userRepository.saveAll(initialUsers);
+
+        var initialTickets = dataLoader.load(PATH_TICKETS, Ticket.class);
+        initialTickets.forEach(ticket -> {
+            ticket.setUserId(savedUsers.getFirst().getId());
+            LOGGER.log(Level.INFO, ticket.toString());
+        });
+        var ticketRepository = applicationContext.getBean(TicketRepository.class);
+        ticketRepository.saveAll(initialTickets);
 
         // Lesson - 1
         Ticket ticket = new Ticket();
