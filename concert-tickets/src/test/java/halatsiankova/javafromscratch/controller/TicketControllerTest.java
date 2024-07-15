@@ -22,7 +22,7 @@ class TicketControllerTest {
 
     @WithMockUser("spring")
     @Test
-    void givenAuthRequest_shouldSucceedWith200() throws Exception {
+    void shouldAuthRequestSuccessfullyWith200() throws Exception {
         var responseBody = mvc.perform(get("/ticket/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -32,7 +32,7 @@ class TicketControllerTest {
     }
 
     @Test
-    void givenAuthRequestOnPrivateService_shouldSucceedWith200() throws Exception {
+    void shouldRequestWith401WhenUnauthorized() throws Exception {
         mvc.perform(get("/ticket/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }

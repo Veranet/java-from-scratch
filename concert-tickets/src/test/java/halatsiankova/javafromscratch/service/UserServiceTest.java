@@ -8,15 +8,19 @@ import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -59,7 +63,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionWhenUserWithIdDoesNotExist() throws SQLException {
+    void shouldThrowIllegalArgumentExceptionWhenUserWithIdDoesNotExist() {
         when(userRepository.findById(3)).thenReturn(Optional.empty());
 
         var exception
@@ -67,18 +71,12 @@ class UserServiceTest {
         assertEquals("User with ID = 3 does not exist.", exception.getMessage());
     }
 
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenUserIdLess0() {
+    @ParameterizedTest
+    @MethodSource("failedDataForUsers")
+    void shouldThrowIllegalArgumentExceptionWhenUserIdInvalid(int userId, String exceptionMessage) {
         var exception
-                = assertThrows(IllegalArgumentException.class, () -> userService.getUserById(-3));
-        assertEquals("User ID must not be negative or equal to 0.", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenUserIDLess0() {
-        var exception =
-                assertThrows(IllegalArgumentException.class, () -> userService.deleteUserById(-1));
-        assertEquals("User ID must not be negative or equal to 0.", exception.getMessage());
+                = assertThrows(IllegalArgumentException.class, () -> userService.getUserById(userId));
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
     @Test
@@ -94,29 +92,31 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldUpdateUser() throws SQLException {
+    void shouldUpdateUser() {
         Set<Ticket> ticketList = new HashSet<>();
         var ticket = new Ticket(null, 1, TicketType.DAY,
                 LocalDateTime.of(2024, 2, 1, 1, 1, 1));
         ticketList.add(ticket);
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var user = new BaseUser(2, "Client", localDateTime, Status.ACTIVATED, ticketList);
         var ticketUpdate = new Ticket(null, 0, TicketType.DAY, localDateTime);
-        doNothing().when(userRepository).updateBaseUserByIdAndTicket(user.getId(), ticketUpdate.getType().name(), ticketUpdate.getCreatedDateTime());
+        doNothing().when(userRepository)
+                .updateBaseUserByIdAndTicket(2, ticketUpdate.getType().name(), ticketUpdate.getCreatedDateTime());
 
-        userService.updateUserAndSaveTickets(user, ticketUpdate);
+        userService.updateUserAndSaveTickets(2, ticketUpdate);
 
-        verify(userRepository).updateBaseUserByIdAndTicket(user.getId(), ticketUpdate.getType().name(), ticketUpdate.getCreatedDateTime());
+        verify(userRepository).updateBaseUserByIdAndTicket(2, ticketUpdate.getType().name(),
+                ticketUpdate.getCreatedDateTime());
     }
 
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenUserIsNull() {
+    @ParameterizedTest
+    @MethodSource("failedDataForUsers")
+    void shouldThrowIllegalArgumentExceptionWhenUserIsInvalid(int userId, String exceptionMessage) {
         var ticket = new Ticket(null, 1, TicketType.DAY,
                 LocalDateTime.of(2024, 2, 1, 1, 1, 1));
 
         var exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUserAndSaveTickets(null, ticket));
-        assertEquals("User must not be null.", exception.getMessage());
+                () -> userService.updateUserAndSaveTickets(userId, ticket));
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
     @Test
@@ -125,11 +125,9 @@ class UserServiceTest {
         var ticket = new Ticket(null, 1, TicketType.DAY,
                 LocalDateTime.of(2024, 2, 1, 1, 1, 1));
         ticketList.add(ticket);
-        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var user = new BaseUser(2, "Client", localDateTime, Status.ACTIVATED, ticketList);
 
         var exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUserAndSaveTickets(user, null));
+                () -> userService.updateUserAndSaveTickets(2, null));
         assertEquals("Ticket must not be null.", exception.getMessage());
     }
 
@@ -141,11 +139,16 @@ class UserServiceTest {
         var ticket = new Ticket(null, 1, TicketType.DAY,
                 LocalDateTime.of(2024, 2, 1, 1, 1, 1));
         ticketList.add(ticket);
-        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var user = new BaseUser(2, "Client", localDateTime, Status.ACTIVATED, ticketList);
 
         var exception = assertThrows(UnsupportedOperationException.class,
-                () -> userService.updateUserAndSaveTickets(user, ticket));
+                () -> userService.updateUserAndSaveTickets(2, ticket));
         assertEquals("Update not supported.", exception.getMessage());
+    }
+
+    public static Stream<Arguments> failedDataForUsers() {
+        return Stream.of(
+                arguments(0, "User ID must not be negative or equal to 0."),
+                arguments(-2, "User ID must not be negative or equal to 0.")
+        );
     }
 }

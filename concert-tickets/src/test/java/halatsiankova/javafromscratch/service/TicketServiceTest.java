@@ -4,12 +4,17 @@ import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -88,19 +93,21 @@ class TicketServiceTest {
         verify(ticketRepository).updateTicketTypeById(2, TicketType.YEAR.name());
     }
 
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenTicketTypeNull() {
-        var exception =
-                assertThrows(IllegalArgumentException.class, () -> ticketService.update(null, 2));
+    @ParameterizedTest
+    @MethodSource("failedDataForTickets")
+    void shouldThrowIllegalArgumentExceptionWhenInvalidTicketParams(int ticketId,
+                                                                    TicketType ticketType,
+                                                                    String exceptionMessage) {
+        var exception = assertThrows(IllegalArgumentException.class, () -> ticketService.update(ticketType, ticketId));
 
-        assertEquals("Ticket type must not be null.", exception.getMessage());
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
-    @Test
-    void shouldThrowIllegalArgumentExceptionWhenTicketIDLess0() {
-        var exception =
-                assertThrows(IllegalArgumentException.class, () -> ticketService.update(TicketType.YEAR, -2));
-
-        assertEquals("Ticket ID must not be negative or equal to 0.", exception.getMessage());
+    private static Stream<Arguments> failedDataForTickets() {
+        return Stream.of(
+                arguments(0, TicketType.DAY, "Ticket ID must not be negative or equal to 0."),
+                arguments(-2, TicketType.DAY, "Ticket ID must not be negative or equal to 0."),
+                arguments(1, null, "Ticket type must not be null.")
+        );
     }
 }
