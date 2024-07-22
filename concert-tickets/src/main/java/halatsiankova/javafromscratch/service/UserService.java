@@ -51,21 +51,19 @@ public class UserService {
     /**
      * Update the user and create a ticket if the status is ACTIVATE and the update operation is enabled.
      *
-     * @param user user to be updated.
+     * @param userId user's ID that to be updated.
      * @param ticket ticket to be created.
      * @throws IllegalArgumentException if the user or ticket is null.
      * @throws UnsupportedOperationException if the update operation is disabled.
      */
     @Transactional
-    public void updateUserAndSaveTickets(BaseUser user, Ticket ticket) {
+    public void updateUserAndSaveTickets(int userId, Ticket ticket) {
+        checkUserId(userId);
         if(!updateEnabled) {
             throw new UnsupportedOperationException("Update not supported.");
         }
-        if (user == null) {
-            throw new IllegalArgumentException("User must not be null.");
-        }
         if (ticket != null) {
-            userRepository.updateBaseUserByIdAndTicket(user.getId(), ticket.getType().name(), ticket.getCreatedDateTime());
+            userRepository.updateBaseUserByIdAndTicket(userId, ticket.getType().name(), ticket.getCreatedDateTime());
         } else {
             throw new IllegalArgumentException("Ticket must not be null.");
         }
