@@ -5,12 +5,14 @@ import halatsiankova.javafromscratch.enumerated.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import org.hibernate.annotations.JdbcType;
@@ -18,6 +20,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,11 +37,13 @@ public class BaseUser implements User {
     private String name;
     @Column(name = "creation_date")
     private LocalDateTime createDate;
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("id")
     private Set<Ticket> tickets;
-    @Column(name = "status")
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "status")
     private Status status;
 
     public BaseUser(Integer id, Role role) {
@@ -109,7 +114,14 @@ public class BaseUser implements User {
     }
 
     public void setTickets(Collection<Ticket> tickets) {
-        this.tickets.addAll(tickets);
+        if (tickets == null) {
+            return;
+        }
+        if (this.tickets != null) {
+            this.tickets.addAll(tickets);
+        } else {
+            this.tickets = new HashSet<>(tickets);
+        }
     }
 
     public Status getStatus() {

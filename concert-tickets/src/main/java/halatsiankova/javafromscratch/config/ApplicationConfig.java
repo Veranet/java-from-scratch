@@ -1,59 +1,48 @@
 package halatsiankova.javafromscratch.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
-import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
-import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
-import halatsiankova.javafromscratch.service.TicketService;
-import halatsiankova.javafromscratch.service.UserService;
 
-import halatsiankova.javafromscratch.util.TicketsLoader;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import halatsiankova.javafromscratch.util.DataLoader;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ResourceLoader;
+
+import java.util.List;
 
 @Configuration
 @PropertySource("classpath:application.yml")
 public class ApplicationConfig {
 
-    @Bean
-    public ConnectionDataBasePSQL connectionDataBasePSQL(
-            @Value("${spring.datasource.url}") String url,
-            @Value("${spring.datasource.username}") String user,
-            @Value("${spring.datasource.password}") String password) {
-        return new ConnectionDataBasePSQL(url, user, password);
-    }
-
-    @Bean
-    public UserRepositoryImpl userRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
-        return new UserRepositoryImpl(connectionDataBasePSQL);
-    }
-
-    @Bean
-    public TicketRepositoryImpl ticketRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
-        return new TicketRepositoryImpl(connectionDataBasePSQL);
-    }
-
-    @Bean
-    public TicketService ticketService(TicketRepositoryImpl ticketRepositoryImpl) {
-        return new TicketService(ticketRepositoryImpl);
-    }
-
-    @Bean
-    public UserService userService(UserRepositoryImpl userRepositoryImpl,
-                                   @Value("${service.update-enabled:true}") boolean updateEnabled) {
-        return new UserService(userRepositoryImpl, updateEnabled);
-    }
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return JsonMapper.builder().addModule(new JavaTimeModule()).build();
     }
 
     @Bean
-    public TicketsLoader ticketsLoader(ResourceLoader resourceLoader, ObjectMapper objectMapper) {
-        return new TicketsLoader(resourceLoader, objectMapper);
+    public DataLoader ticketsLoader(ResourceLoader resourceLoader, ObjectMapper objectMapper) {
+        return new DataLoader(resourceLoader, objectMapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "conditional.string-enabled", havingValue = "true")
+    public ThisIsMyFirstConditionalBean thisIsMyFirstConditional(
+            @Value("${conditional.string}") String conditionalString) {
+        return new ThisIsMyFirstConditionalBean(conditionalString);
+    }
+
+    @Bean
+    public ConversionService conversionService(List<Converter<?, ?>> converters) {
+        ApplicationConversionService conversionService = new ApplicationConversionService();
+        converters.forEach(conversionService::addConverter);
+        return conversionService;
     }
 }

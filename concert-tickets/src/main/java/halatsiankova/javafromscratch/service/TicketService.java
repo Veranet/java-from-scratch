@@ -2,61 +2,50 @@ package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
+import halatsiankova.javafromscratch.repository.TicketRepository;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TicketService {
-    private final TicketRepositoryImpl repository;
+    private final TicketRepository repository;
 
-    public TicketService(TicketRepositoryImpl ticketRepository) {
-            this.repository = ticketRepository;
+    public TicketService(TicketRepository ticketRepository) {
+        this.repository = ticketRepository;
     }
 
     public void add(Ticket ticket) {
-        if(ticket == null) {
+        if (ticket == null) {
             throw new IllegalArgumentException("Ticket must not be null.");
         }
-            repository.save(ticket);
+        repository.save(ticket);
     }
 
     public Ticket getTicketById(int ticketId) {
         checkTicketId(ticketId);
         Optional<Ticket> ticket;
-        try {
-            ticket = repository.findById(ticketId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        ticket = repository.findById(ticketId);
         return ticket.orElseThrow(
                 () -> new IllegalArgumentException(String.format("Ticket with ID = %d does not exist.", ticketId)));
     }
 
     public List<Ticket> getAllTicketsByUserId(int userId) {
         UserService.checkUserId(userId);
-        try {
-            return repository.findAllByUserId(userId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return repository.findAllByUserId(userId);
     }
 
     public void update(TicketType ticketType, int ticketId) {
-        if(ticketType == null) {
+        if (ticketType == null) {
             throw new IllegalArgumentException("Ticket type must not be null.");
         }
         checkTicketId(ticketId);
-        try {
-            repository.update(ticketType, ticketId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        repository.updateTicketTypeById(ticketId, ticketType.name());
     }
 
     private void checkTicketId(int ticketId) {
-        if(ticketId <= 0) {
+        if (ticketId <= 0) {
             throw new IllegalArgumentException("Ticket ID must not be negative or equal to 0.");
         }
     }

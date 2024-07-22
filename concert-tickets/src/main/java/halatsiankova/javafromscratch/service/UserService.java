@@ -2,19 +2,20 @@ package halatsiankova.javafromscratch.service;
 
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
+import halatsiankova.javafromscratch.repository.UserRepository;
 import jakarta.transaction.Transactional;
-
-import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class UserService {
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
 
     private final boolean updateEnabled;
 
-    public UserService(UserRepositoryImpl userRepository, boolean updateEnabled) {
+    public UserService(UserRepository userRepository, @Value("${service.update-enabled:true}") boolean updateEnabled) {
         this.userRepository = userRepository;
         this.updateEnabled = updateEnabled;
     }
@@ -28,12 +29,7 @@ public class UserService {
 
     public BaseUser getUserById(int userId) {
         checkUserId(userId);
-        Optional<BaseUser> user;
-        try {
-            user = userRepository.findById(userId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Optional<BaseUser> user = userRepository.findById(userId);
         return user.orElseThrow(
                 () -> new IllegalArgumentException(String.format("User with ID = %d does not exist.", userId)));
     }
@@ -47,9 +43,9 @@ public class UserService {
      */
     public void deleteUserById(int userId) {
         checkUserId(userId);
-        if (!userRepository.deleteById(userId)) {
-            throw new IllegalArgumentException(String.format("User with ID = %d was not deleted.", userId));
-        }
+        userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException(String.format("User with ID = %d does not exist.", userId)));
+        userRepository.deleteById(userId);
     }
 
     /**
@@ -69,7 +65,7 @@ public class UserService {
             throw new IllegalArgumentException("User must not be null.");
         }
         if (ticket != null) {
-            userRepository.updateUserAndSaveTicket(user, ticket);
+            userRepository.updateBaseUserByIdAndTicket(user.getId(), ticket.getType().name(), ticket.getCreatedDateTime());
         } else {
             throw new IllegalArgumentException("Ticket must not be null.");
         }

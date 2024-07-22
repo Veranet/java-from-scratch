@@ -6,7 +6,7 @@ import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.BaseUser;
 import halatsiankova.javafromscratch.model.Client;
 import halatsiankova.javafromscratch.model.Ticket;
-import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
+import halatsiankova.javafromscratch.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -17,21 +17,23 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UserServiceTest {
-    private final UserRepositoryImpl userRepository = mock(UserRepositoryImpl.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
 
     private UserService userService = new UserService(userRepository, true);
 
     @Test
     void shouldAddUser() {
-        var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
-        var user = new Client(null, Role.CLIENT, "Client", localDateTime);
-        doNothing().when(userRepository).save(user);
+        var createDate = LocalDateTime.of(2024, 5, 5, 0, 0);
+        var user = new BaseUser(null, "name", createDate, Status.ACTIVATED, Set.of());
+
+        when(userRepository.save(user)).thenReturn(any());
 
         userService.add(user);
 
@@ -44,7 +46,7 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldReturnUserById() throws SQLException {
+    void shouldReturnUserById() {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
         var user = new Client(2, Role.CLIENT, "Client", localDateTime);
 
@@ -81,7 +83,10 @@ class UserServiceTest {
 
     @Test
     void shouldDeleteUserById() {
-        when(userRepository.deleteById(1)).thenReturn(true);
+        var createDate = LocalDateTime.of(2024, 5, 5, 0, 0);
+        var user = new BaseUser(null, "name", createDate, Status.ACTIVATED, Set.of());
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).deleteById(1);
 
         userService.deleteUserById(1);
 
@@ -97,11 +102,11 @@ class UserServiceTest {
         var localDateTime = LocalDateTime.of(2024, 5, 5, 0, 0);
         var user = new BaseUser(2, "Client", localDateTime, Status.ACTIVATED, ticketList);
         var ticketUpdate = new Ticket(null, 0, TicketType.DAY, localDateTime);
-        doNothing().when(userRepository).updateUserAndSaveTicket(user, ticketUpdate);
+        doNothing().when(userRepository).updateBaseUserByIdAndTicket(user.getId(), ticketUpdate.getType().name(), ticketUpdate.getCreatedDateTime());
 
         userService.updateUserAndSaveTickets(user, ticketUpdate);
 
-        verify(userRepository).updateUserAndSaveTicket(user, ticketUpdate);
+        verify(userRepository).updateBaseUserByIdAndTicket(user.getId(), ticketUpdate.getType().name(), ticketUpdate.getCreatedDateTime());
     }
 
     @Test

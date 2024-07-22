@@ -5,6 +5,7 @@ import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.validator.NullValidatorProcessor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,9 +46,9 @@ public class Ticket implements Printable, Sharable {
     private LocalDateTime createdDateTime;
     @Column(name = "user_id")
     private int userId;
-    @Enumerated
-    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "ticket_type")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private TicketType type;
 
     public Ticket() {
