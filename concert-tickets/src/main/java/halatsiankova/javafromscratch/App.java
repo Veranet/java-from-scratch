@@ -10,6 +10,8 @@ import halatsiankova.javafromscratch.model.Ticket;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
 import halatsiankova.javafromscratch.util.HexIdGeneratorUtil;
+
+import halatsiankova.javafromscratch.util.TicketsLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -38,7 +40,11 @@ public class App {
         userService.add(new BaseUser(null, "Brenda", localDateTime));
         ticketService.add(new Ticket(null, 1, TicketType.DAY, localDateTime));
         LOGGER.log(Level.INFO, ticketService.getTicketById(1).toString());
-        LOGGER.log(Level.INFO,userService.getUserById(1).toString());
+        LOGGER.log(Level.INFO, userService.getUserById(1).toString());
+
+        // Lesson - 11
+        TicketsLoader ticketsLoader = applicationContext.getBean(TicketsLoader.class);
+        ticketsLoader.load().forEach(ticket -> LOGGER.log(Level.INFO, ticket.toString()));
 
         // Lesson - 1
         Ticket ticket = new Ticket();
@@ -55,7 +61,7 @@ public class App {
         ticket.setId(15);
         LOGGER.log(Level.INFO, ticket.getId().toString());
         // task 4.2
-        LOGGER.log(Level.INFO,ticket.print());
+        LOGGER.log(Level.INFO, ticket.print());
         // task 4.4
         LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890"));
         LOGGER.log(Level.INFO, ticket1.share("+12 123-456-7890", "email@dom.com"));

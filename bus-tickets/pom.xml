@@ -12,12 +12,6 @@
     <artifactId>bus-tickets</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <jackson.version>2.17.1</jackson.version>
-        <junit.version>5.10.2</junit.version>
-        <mockito.version>5.11.0</mockito.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

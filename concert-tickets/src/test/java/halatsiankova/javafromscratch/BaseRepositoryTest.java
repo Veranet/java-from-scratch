@@ -1,8 +1,7 @@
 package halatsiankova.javafromscratch;
 
 import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,21 +13,12 @@ public class BaseRepositoryTest {
     public static final ConnectionDataBasePSQL con;
 
     static {
-            con = new ConnectionDataBasePSQL();
+            con = new ConnectionDataBasePSQL("jdbc:postgresql://localhost:5432/my_ticket_service_db",
+                    "myuser", "mypassword");
     }
 
-    @BeforeEach
-    void preparedDataBase() throws IOException {
-        var sqlQuery = getResource();
-        try (Statement statement = con.getConnection().createStatement()) {
-            statement.execute(sqlQuery);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @AfterEach
-    public void clear() {
+    @AfterAll
+    public static void clear() {
         String sqlQuery;
         try {
             sqlQuery = new String(Files.readAllBytes(Paths.get("src/main/resources/clear.sql")));
@@ -39,15 +29,6 @@ public class BaseRepositoryTest {
             statement.execute(sqlQuery);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    protected static String getResource() throws IOException {
-        try {
-            return new String(Files.readAllBytes(Paths.get("src/main/resources/init.sql")));
-        } catch (IOException exception) {
-            System.out.println("\nCannot read file: " + exception.getMessage());
-            throw exception;
         }
     }
 }

@@ -1,37 +1,59 @@
 package halatsiankova.javafromscratch.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import halatsiankova.javafromscratch.connection.ConnectionDataBasePSQL;
 import halatsiankova.javafromscratch.repository.TicketRepositoryImpl;
 import halatsiankova.javafromscratch.repository.UserRepositoryImpl;
 import halatsiankova.javafromscratch.service.TicketService;
 import halatsiankova.javafromscratch.service.UserService;
+
+import halatsiankova.javafromscratch.util.TicketsLoader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ResourceLoader;
 
 @Configuration
+@PropertySource("classpath:application.yml")
 public class ApplicationConfig {
-    @Bean
-    public ConnectionDataBasePSQL connectionDataBasePSQL() {
-        return new ConnectionDataBasePSQL();
-    };
 
     @Bean
-    public UserRepositoryImpl userRepositoryImpl() {
-        return new UserRepositoryImpl();
+    public ConnectionDataBasePSQL connectionDataBasePSQL(
+            @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.username}") String user,
+            @Value("${spring.datasource.password}") String password) {
+        return new ConnectionDataBasePSQL(url, user, password);
     }
 
     @Bean
-    public TicketRepositoryImpl ticketRepositoryImpl() {
-        return new TicketRepositoryImpl();
+    public UserRepositoryImpl userRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
+        return new UserRepositoryImpl(connectionDataBasePSQL);
     }
 
     @Bean
-    public TicketService ticketService() {
-        return new TicketService(ticketRepositoryImpl());
+    public TicketRepositoryImpl ticketRepositoryImpl(ConnectionDataBasePSQL connectionDataBasePSQL) {
+        return new TicketRepositoryImpl(connectionDataBasePSQL);
     }
 
     @Bean
-    public UserService userService() {
-        return new UserService(userRepositoryImpl());
+    public TicketService ticketService(TicketRepositoryImpl ticketRepositoryImpl) {
+        return new TicketService(ticketRepositoryImpl);
+    }
+
+    @Bean
+    public UserService userService(UserRepositoryImpl userRepositoryImpl,
+                                   @Value("${service.update-enabled:true}") boolean updateEnabled) {
+        return new UserService(userRepositoryImpl, updateEnabled);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public TicketsLoader ticketsLoader(ResourceLoader resourceLoader, ObjectMapper objectMapper) {
+        return new TicketsLoader(resourceLoader, objectMapper);
     }
 }

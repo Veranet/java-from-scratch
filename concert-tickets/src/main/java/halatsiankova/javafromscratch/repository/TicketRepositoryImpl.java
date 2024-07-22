@@ -10,7 +10,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class TicketRepositoryImpl extends ConnectionDataBasePSQL implements TicketRepository {
+public class TicketRepositoryImpl implements TicketRepository {
+
+   private final ConnectionDataBasePSQL connection;
+
+    public TicketRepositoryImpl(ConnectionDataBasePSQL connection) {
+        this.connection = connection;
+    }
+
 
     @Override
     public void save(Ticket ticket) {

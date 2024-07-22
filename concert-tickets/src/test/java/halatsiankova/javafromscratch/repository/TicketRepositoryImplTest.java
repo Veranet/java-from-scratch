@@ -1,5 +1,6 @@
 package halatsiankova.javafromscratch.repository;
 
+import halatsiankova.javafromscratch.BaseRepositoryTest;
 import halatsiankova.javafromscratch.enumerated.TicketType;
 import halatsiankova.javafromscratch.model.Ticket;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +12,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TicketRepositoryImplTest {
+class TicketRepositoryImplTest extends BaseRepositoryTest {
 
     private TicketRepositoryImpl ticketRepository;
 
     @BeforeEach
     void init() {
-        ticketRepository = new TicketRepositoryImpl();
-        ticketRepository.connection = ticketRepository.getConnection();
+        ticketRepository = new TicketRepositoryImpl(con);
         var createDate = LocalDateTime.of(2024, 7, 1, 0, 0 ,0);
         var ticketWithUserId1 = new Ticket(null, 1, TicketType.DAY, createDate);
         ticketRepository.save(ticketWithUserId1);
     }
+
 
     @Test
     void shouldSaveTicket() throws SQLException {
@@ -31,8 +32,8 @@ class TicketRepositoryImplTest {
 
         ticketRepository.save(ticket);
 
-        var expected = Optional.of(new Ticket(3, 1, TicketType.DAY, createDate));
-        assertEquals(expected, ticketRepository.findById(3));
+        var expected = Optional.of(new Ticket(2, 1, TicketType.DAY, createDate));
+        assertEquals(expected, ticketRepository.findById(2));
     }
 
     @Test
